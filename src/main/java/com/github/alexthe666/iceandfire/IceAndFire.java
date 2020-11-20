@@ -64,7 +64,8 @@ public class IceAndFire {
     public static final String MODID = "iceandfire";
     public static final SimpleChannel NETWORK_WRAPPER;
     public static final boolean DEBUG = false;
-    public static final String VERSION = "2.1.2-1.16.4";
+    public static final String VERSION = "2.1.1-1.16.3";
+    public static final String TWEAKBSD_VERSION = "v3"; // NOTE: My own custom version
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static ItemGroup TAB_ITEMS = new ItemGroup(MODID) {
         @Override

@@ -72,6 +72,7 @@ public class EntityPixie extends TameableEntity {
     public int ticksHeldItemFor;
     private BlockPos housePos;
     public int stealCooldown = 0;
+
     public EntityPixie(EntityType type, World worldIn) {
         super(type, worldIn);
         this.moveController = new EntityPixie.AIMoveControl(this);
@@ -105,12 +106,27 @@ public class EntityPixie extends TameableEntity {
         return entity.func_233580_cy_();
     }
 
+    // NOTE: tweakbsd helper
+    protected boolean isSitting() {
+        //return this.func_233684_eK_();
+
+        return this.func_233685_eM_();
+    }
+
+    // NOTE: tweakbsd helper
+    protected void setSitting(boolean sitting) {
+        this.func_233686_v_(sitting);
+    }
+
     protected int getExperiencePoints(PlayerEntity player) {
         return 3;
     }
 
     public static AttributeModifierMap.MutableAttribute bakeAttributes() {
         return MobEntity.func_233666_p_()
+
+                //FOLLOW_RANGE
+                .func_233815_a_(Attributes.field_233819_b_, 20D)  // NOTE: tweakbsd Additions added generic.follow_range with a default of 20
                 //HEALTH
                 .func_233815_a_(Attributes.field_233818_a_, 10D)
                 //SPEED
@@ -136,7 +152,6 @@ public class EntityPixie extends TameableEntity {
         if (!this.world.isRemote && !this.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
             this.entityDropItem(this.getHeldItem(Hand.MAIN_HAND), 0);
             this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
-            this.stealCooldown = 6000;
         }
         super.onDeath(cause);
         //if (cause.getTrueSource() instanceof PlayerEntity) {
@@ -161,6 +176,14 @@ public class EntityPixie extends TameableEntity {
 
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         if (this.isOwner(player)) {
+
+            // NOTE: Addition by tweakbsd, tamed Pixie drop their item using a stick
+            /*if (this.isTamed() && player.getHeldItem(hand).getItem() == Items.STICK) {
+                this.entityDropItem(this.getHeldItem(Hand.MAIN_HAND), 0);
+                this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
+                return ActionResultType.SUCCESS;
+            }*/
+
             if (player.getHeldItem(hand).getItem() == Items.SUGAR && this.getHealth() < this.getMaxHealth()) {
                 this.heal(5);
                 player.getHeldItem(hand).shrink(1);
@@ -198,6 +221,7 @@ public class EntityPixie extends TameableEntity {
                     this.entityDropItem(this.getHeldItem(Hand.MAIN_HAND), 0.0F);
                     this.stealCooldown = 6000;
                 }
+
                 this.entityDropItem(stack, 0.0F);
             }
             //player.addStat(ModAchievements.jarPixie);
@@ -215,7 +239,7 @@ public class EntityPixie extends TameableEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PixieAIFollowOwner(this, 1.0D, 2.0F, 4.0F));
-        this.goalSelector.addGoal(1, new PixieAIPickupItem(this, false));
+        this.goalSelector.addGoal(5, new PixieAIPickupItem(this, false));  // NOTE: tweakbsd priority changed!
         this.goalSelector.addGoal(2, new PixieAIFlee(this, PlayerEntity.class, 10, new Predicate<PlayerEntity>() {
             @Override
             public boolean apply(@Nullable PlayerEntity entity) {
@@ -249,6 +273,7 @@ public class EntityPixie extends TameableEntity {
 
     public void livingTick() {
         super.livingTick();
+
         if(stealCooldown > 0){
             stealCooldown--;
         }
@@ -257,6 +282,9 @@ public class EntityPixie extends TameableEntity {
         }else{
             ticksHeldItemFor = 0;
         }
+
+
+
         if (!this.func_233684_eK_() && !this.isBeyondHeight()) {
             this.setMotion(this.getMotion().add(0, 0.08, 0));
         } else {
@@ -303,16 +331,49 @@ public class EntityPixie extends TameableEntity {
     @Override
     public void readAdditional(CompoundNBT compound) {
         this.setColor(compound.getInt("Color"));
+
         this.stealCooldown = compound.getInt("StealCooldown");
         this.ticksHeldItemFor = compound.getInt("HoldingTicks");
+
+
         super.readAdditional(compound);
+
+        // NOTE: tweakbsd isTamed() addition to save position in world and if sitting or not
+        if(this.isTamed() && compound.contains("PosX") && compound.contains("PosY") && compound.contains("PosZ")) {
+            double x = compound.getDouble("PosX");
+            double y = compound.getDouble("PosY");
+            double z = compound.getDouble("PosZ");
+
+            this.setRawPosition(x, y, z);
+            if(compound.contains("PixieSitting")) {
+
+                boolean isSitting = compound.getBoolean("PixieSitting");
+                this.func_233687_w_(isSitting);  // NOTE: Set private field this.field_233683_bw_
+                this.func_233686_v_(isSitting);  // set stuff in this.dataManager
+            }
+
+        }
+
+
     }
 
     @Override
     public void writeAdditional(CompoundNBT compound) {
         compound.putInt("Color", this.getColor());
+
         compound.putInt("StealCooldown", this.stealCooldown);
         compound.putInt("HoldingTicks", this.ticksHeldItemFor);
+
+        // NOTE: tweakbsd isTamed() addition
+        if(this.isTamed()) {
+            compound.putDouble("PosX", this.getPosX());
+            compound.putDouble("PosY", this.getPosY());
+            compound.putDouble("PosZ", this.getPosZ());
+
+            // NOTE: This is saved to restore sitting pixie upon loading World
+            compound.putBoolean("PixieSitting", this.isSitting());
+        }
+
         super.writeAdditional(compound);
     }
 

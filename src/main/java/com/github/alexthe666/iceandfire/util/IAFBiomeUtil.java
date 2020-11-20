@@ -35,15 +35,15 @@ public class IAFBiomeUtil {
     protected static boolean anyBiomeInfoInList(Biome biome, List<? extends String> biomeTypes, List<? extends String> list, boolean hasAll) {
         if (list.size() == 0) return false;
 
-        List<? extends String> dictionaryChecks = list.stream()
+        List <? extends String> dictionaryChecks = list.stream()
                 .filter(s -> s.charAt(0) == '#')
                 .map(s -> s.substring(1))
                 .collect(Collectors.toList());
-        List<? extends String> categoryChecks = list.stream()
+        List <? extends String> categoryChecks = list.stream()
                 .filter(s -> s.charAt(0) == '@')
                 .map(s -> s.substring(1))
                 .collect(Collectors.toList());
-        List<? extends String> registryChecks = list.stream()
+        List <? extends String> registryChecks = list.stream()
                 .filter(s -> IDENTIFIERS.indexOf(s.charAt(0)) == -1)
                 .collect(Collectors.toList());
 
@@ -62,17 +62,9 @@ public class IAFBiomeUtil {
         }
     }
 
-    protected static boolean biomeMeetsListConditions(Biome biome, List<? extends String> list) {
+    public static boolean biomeMeetsListConditions(Biome biome, List<? extends String> list) {
         if (list.size() == 0) return false;
 
-        /*for(String str : list){
-            if(str.equals(biome.getRegistryName().toString())){
-                return true;
-            }
-        }
-        return false;*/
-        //TODO: proper reimplementation of biome dictionary. This version returns true for all biomes for many
-        // features and entity spawns.
         List<? extends String> trimmed = list.stream()
                 .map(String::trim)
                 .collect(Collectors.toList());
@@ -113,12 +105,12 @@ public class IAFBiomeUtil {
                 .map(s -> s.toLowerCase(Locale.ROOT).replaceAll("\\s", ""))
                 .collect(Collectors.toList());
 
-        if (list.size() == 1 && list.contains("*")) return true;
+        if(list.size() == 1 && list.contains("*")) return true;
 
         // Get an entries that are an expression and evaluate them
         boolean reducedAconditionals = lcList.stream()
                 .filter(s -> s.indexOf('+') > 0)
-                .map(e -> biomeMeetsListConditions(biome, Lists.newArrayList(e.split("\\+"))))
+                .map(e -> biomeMeetsListConditions(biome, Lists.newArrayList(e.split("\\+"))) )
                 .reduce(false, (acc, curr) -> acc || curr);
 
         return reducedAconditionals || biomeMeetsListConditions(biome, lcList.stream()

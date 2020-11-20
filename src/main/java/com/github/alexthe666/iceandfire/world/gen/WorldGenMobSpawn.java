@@ -68,7 +68,7 @@ public class WorldGenMobSpawn extends Feature<NoFeatureConfig> {
 
         if (IafConfig.generateDragonSkeletons) {
             if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.lightningDragonSkeletonBiomes, biome) && rand.nextInt(IafConfig.generateDragonSkeletonChance + 1) == 0) {
-            	EntityDragonBase firedragon = IafEntityRegistry.LIGHTNING_DRAGON.create(worldIn.getWorld());
+                EntityDragonBase firedragon = IafEntityRegistry.LIGHTNING_DRAGON.create(worldIn.getWorld());
                 firedragon.setPosition(position.getX() + 0.5F, position.getY() + 1, position.getZ() + 0.5F);
                 int dragonage = 10 + rand.nextInt(100);
                 firedragon.growDragon(dragonage);
@@ -78,7 +78,7 @@ public class WorldGenMobSpawn extends Feature<NoFeatureConfig> {
                 firedragon.rotationYaw = rand.nextInt(360);
                 worldIn.addEntity(firedragon);
             }else if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.fireDragonSkeletonBiomes, biome) && rand.nextInt(IafConfig.generateDragonSkeletonChance + 1) == 0) {
-            	EntityDragonBase firedragon = IafEntityRegistry.FIRE_DRAGON.create(worldIn.getWorld());
+                EntityDragonBase firedragon = IafEntityRegistry.FIRE_DRAGON.create(worldIn.getWorld());
                 firedragon.setPosition(position.getX() + 0.5F, position.getY() + 1, position.getZ() + 0.5F);
                 int dragonage = 10 + rand.nextInt(100);
                 firedragon.growDragon(dragonage);
@@ -89,7 +89,7 @@ public class WorldGenMobSpawn extends Feature<NoFeatureConfig> {
                 worldIn.addEntity(firedragon);
             }
             if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.iceDragonSkeletonBiomes, biome) && rand.nextInt(IafConfig.generateDragonSkeletonChance + 1) == 0) {
-            	EntityDragonBase icedragon = IafEntityRegistry.ICE_DRAGON.create(worldIn.getWorld());
+                EntityDragonBase icedragon = IafEntityRegistry.ICE_DRAGON.create(worldIn.getWorld());
                 icedragon.setPosition(position.getX() + 0.5F, position.getY() + 1, position.getZ() + 0.5F);
                 int dragonage = 10 + rand.nextInt(100);
                 icedragon.growDragon(dragonage);
@@ -128,7 +128,7 @@ public class WorldGenMobSpawn extends Feature<NoFeatureConfig> {
                     EntityStymphalianBird bird = IafEntityRegistry.STYMPHALIAN_BIRD.create(worldIn.getWorld());
                     bird.setLocationAndAngles(pos.getX() + 0.5F, pos.getY() + 1.5F, pos.getZ() + 0.5F, 0, 0);
                     worldIn.addEntity(bird);
-                    
+
                 }
             }
         }

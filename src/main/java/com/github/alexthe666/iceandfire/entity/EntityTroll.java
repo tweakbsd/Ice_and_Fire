@@ -112,10 +112,11 @@ public class EntityTroll extends MonsterEntity implements IAnimatedEntity, IVill
 
         boolean rngCheck = true;
         if (IafConfig.trollSpawnCheckChance != 0) {
-        	rngCheck = this.getRNG().nextInt(IafConfig.trollSpawnCheckChance) == 0;
+            rngCheck = this.getRNG().nextInt(IafConfig.trollSpawnCheckChance) == 0;
         }
         return rngCheck && !this.world.canSeeSky(pos.up()) && super.canSpawn(worldIn, spawnReasonIn);
     }
+
 
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new SwimGoal(this));

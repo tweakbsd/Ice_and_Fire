@@ -36,7 +36,20 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
         this.targetEntitySelector = new Predicate<ItemEntity>() {
             @Override
             public boolean apply(@Nullable ItemEntity item) {
-                return item instanceof ItemEntity && !item.getItem().isEmpty() && (item.getItem().getItem() == Items.CAKE && !creature.isTamed() || item.getItem().getItem() == Items.SUGAR && creature.isTamed() && creature.getHealth() < creature.getMaxHealth());
+
+                // NOTE: tweakbsd split up version of this selector
+
+                if(!(item instanceof ItemEntity)) return false;
+                if(item.getItem().isEmpty()) return false;
+                if(creature.isTamed()) {
+                    return item.getItem().getItem() == Items.SUGAR && (creature.getHealth() < creature.getMaxHealth());
+                }
+
+
+                return item.getItem().getItem() == Items.CAKE;
+
+                // NOTE: Original code
+                //return item instanceof ItemEntity && !item.getItem().isEmpty() && (item.getItem().getItem() == Items.CAKE && !creature.isTamed() || item.getItem().getItem() == Items.SUGAR && creature.isTamed() && creature.getHealth() < creature.getMaxHealth());
             }
         };
     }

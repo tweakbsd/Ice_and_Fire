@@ -34,6 +34,7 @@ public class IafEntityRegistry {
 
     public static final EntityType<EntityDragonPart> DRAGON_MULTIPART = registerEntity(EntityType.Builder.create(EntityDragonPart::new, EntityClassification.MISC).size(0.5F, 0.5F).immuneToFire().setCustomClientFactory(EntityDragonPart::new), "dragon_multipart");
     public static final EntityType<EntitSlowPart> SLOW_MULTIPART = registerEntity(EntityType.Builder.create(EntitSlowPart::new, EntityClassification.MISC).size(0.5F, 0.5F).immuneToFire().setCustomClientFactory(EntitSlowPart::new), "multipart");
+    //public static final EntityType<EntityDeathwormPart> DEATHWORM_MULTIPART = registerEntity(EntityType.Builder.create(EntityDeathwormPart::new, EntityClassification.MISC).size(0.5F, 0.5F).immuneToFire().setCustomClientFactory(EntityDeathwormPart::new), "multipart");
     public static final EntityType<EntityHydraHead> HYDRA_MULTIPART = registerEntity(EntityType.Builder.create(EntityHydraHead::new, EntityClassification.MISC).size(0.5F, 0.5F).immuneToFire().setCustomClientFactory(EntityHydraHead::new), "hydra_multipart");
     public static final EntityType<EntityCyclopsEye> CYCLOPS_MULTIPART = registerEntity(EntityType.Builder.create(EntityCyclopsEye::new, EntityClassification.MISC).size(0.5F, 0.5F).immuneToFire().setCustomClientFactory(EntityCyclopsEye::new), "cylcops_multipart");
     public static final EntityType<EntityDragonEgg> DRAGON_EGG = registerEntity(EntityType.Builder.create(EntityDragonEgg::new, EntityClassification.MISC).size(0.45F, 0.55F).immuneToFire(), "dragon_egg");
@@ -152,7 +153,7 @@ public class IafEntityRegistry {
         EntitySpawnPlacementRegistry.register(COCKATRICE, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityCockatrice::canSpawnOn);
         EntitySpawnPlacementRegistry.register(AMPHITHERE, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, EntityAmphithere::canAmphithereSpawnOn);
     }
-        @SubscribeEvent
+    @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         try {
             for (Field f : IafEntityRegistry.class.getDeclaredFields()) {
@@ -174,19 +175,19 @@ public class IafEntityRegistry {
 
     public static HashMap<String, Boolean> LOADED_ENTITIES;
     static {
-    	LOADED_ENTITIES = new HashMap<String, Boolean>();
-    	LOADED_ENTITIES.put("HIPPOGRYPH", false);
-    	LOADED_ENTITIES.put("DREAD_LICH", false);
-    	LOADED_ENTITIES.put("COCKATRICE", false);
-    	LOADED_ENTITIES.put("AMPHITHERE", false);
-    	LOADED_ENTITIES.put("TROLL_F", false);
-    	LOADED_ENTITIES.put("TROLL_S", false);
-    	LOADED_ENTITIES.put("TROLL_M", false);
+        LOADED_ENTITIES = new HashMap<String, Boolean>();
+        LOADED_ENTITIES.put("HIPPOGRYPH", false);
+        LOADED_ENTITIES.put("DREAD_LICH", false);
+        LOADED_ENTITIES.put("COCKATRICE", false);
+        LOADED_ENTITIES.put("AMPHITHERE", false);
+        LOADED_ENTITIES.put("TROLL_F", false);
+        LOADED_ENTITIES.put("TROLL_S", false);
+        LOADED_ENTITIES.put("TROLL_M", false);
     }
     public static void onBiomesLoad(BiomeLoadingEvent event) {
-    	Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
+        Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
 
-    	if (IafConfig.spawnHippogryphs && IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.hippogryphBiomes, biome)) {
+        if (IafConfig.spawnHippogryphs && IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.hippogryphBiomes, biome)) {
             event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(IafEntityRegistry.HIPPOGRYPH, IafConfig.hippogryphSpawnRate, 1, 1));
             LOADED_ENTITIES.put("HIPPOGRYPH", true);
         }
@@ -203,14 +204,14 @@ public class IafEntityRegistry {
             LOADED_ENTITIES.put("AMPHITHERE", true);
         }
         if (IafConfig.spawnTrolls && (
-    		IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.forestTrollBiomes, biome) ||
-    		IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.snowyTrollBiomes, biome) ||
-    		IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.mountainTrollBiomes, biome)
-		)) {
+                IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.forestTrollBiomes, biome) ||
+                        IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.snowyTrollBiomes, biome) ||
+                        IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.mountainTrollBiomes, biome)
+        )) {
             event.getSpawns().getSpawner(EntityClassification.MONSTER).add(new MobSpawnInfo.Spawners(IafEntityRegistry.TROLL, IafConfig.trollSpawnRate, 1, 1));
-    		if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.forestTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_F", true);
-    		if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.snowyTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_S", true); 
-    		if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.mountainTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_M", true);
+            if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.forestTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_F", true);
+            if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.snowyTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_S", true);
+            if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.mountainTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_M", true);
         }
     }
 }

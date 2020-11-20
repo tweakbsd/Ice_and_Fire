@@ -7,8 +7,8 @@ import net.minecraft.util.SoundEvent;
 
 public class DragonsteelArmorMaterial extends IafArmorMaterial {
 
-    public DragonsteelArmorMaterial(String name, int durability, int[] damageReduction, int encantability, SoundEvent sound, float toughness) {
-        super(name, durability, damageReduction, encantability, sound, toughness);
+    public DragonsteelArmorMaterial(String name, int durability, int[] damageReduction, int encantability, SoundEvent sound, float toughness, float knockbackResistance) {
+        super(name, durability, damageReduction, encantability, sound, toughness, knockbackResistance);
     }
 
     public int getDamageReductionAmount(EquipmentSlotType slotIn) {
