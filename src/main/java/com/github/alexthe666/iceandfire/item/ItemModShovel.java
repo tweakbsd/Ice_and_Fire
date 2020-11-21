@@ -31,6 +31,12 @@ public class ItemModShovel extends ShovelItem {
 
     private final CustomToolMaterial toolMaterial;
 
+    public ItemModShovel(CustomToolMaterial toolmaterial, String gameName, Item.Properties properties) {
+        super(toolmaterial, 1.5F, -3.0F, properties.group(IceAndFire.TAB_ITEMS));
+        this.toolMaterial = toolmaterial;
+        this.setRegistryName(IceAndFire.MODID, gameName);
+    }
+
     public ItemModShovel(CustomToolMaterial toolmaterial, String gameName) {
         super(toolmaterial, 1.5F, -3.0F, new Item.Properties().group(IceAndFire.TAB_ITEMS));
         this.toolMaterial = toolmaterial;

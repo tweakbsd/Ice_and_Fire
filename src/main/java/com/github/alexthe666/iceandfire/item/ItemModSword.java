@@ -31,6 +31,13 @@ public class ItemModSword extends SwordItem {
 
     private final CustomToolMaterial toolMaterial;
 
+    // NOTE: tweakbsd added ctor
+    public ItemModSword(CustomToolMaterial toolmaterial, String gameName, Item.Properties properties) {
+        super(toolmaterial, 3, -2.4F, properties.group(IceAndFire.TAB_ITEMS));
+        this.toolMaterial = toolmaterial;
+        this.setRegistryName(IceAndFire.MODID, gameName);
+    }
+
     public ItemModSword(CustomToolMaterial toolmaterial, String gameName) {
         super(toolmaterial, 3, -2.4F, new Item.Properties().group(IceAndFire.TAB_ITEMS));
         this.toolMaterial = toolmaterial;

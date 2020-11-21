@@ -31,6 +31,12 @@ public class ItemModHoe extends HoeItem {
 
     private final CustomToolMaterial toolMaterial;
 
+    public ItemModHoe(CustomToolMaterial toolmaterial, String gameName, Item.Properties properties) {
+        super(toolmaterial, -toolmaterial.getHarvestLevel(), -3.0F, properties.group(IceAndFire.TAB_ITEMS));
+        this.toolMaterial = toolmaterial;
+        this.setRegistryName(IceAndFire.MODID, gameName);
+    }
+
     public ItemModHoe(CustomToolMaterial toolmaterial, String gameName) {
         super(toolmaterial, -toolmaterial.getHarvestLevel(), -3.0F, new Item.Properties().group(IceAndFire.TAB_ITEMS));
         this.toolMaterial = toolmaterial;

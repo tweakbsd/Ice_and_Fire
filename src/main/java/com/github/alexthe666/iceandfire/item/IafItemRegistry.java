@@ -17,6 +17,7 @@ import com.github.alexthe666.iceandfire.recipe.IafRecipeRegistry;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.BannerPatternItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.SoundEvents;
@@ -40,9 +41,9 @@ public class IafItemRegistry {
     public static CustomArmorMaterial TROLL_MOUNTAIN_ARMOR_MATERIAL = new IafArmorMaterial("mountain troll", 20, new int[]{2, 5, 7, 3}, 10, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 0.1F);
     public static CustomArmorMaterial TROLL_FOREST_ARMOR_MATERIAL = new IafArmorMaterial("forest troll", 20, new int[]{2, 5, 7, 3}, 10, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 0.1F);
     public static CustomArmorMaterial TROLL_FROST_ARMOR_MATERIAL = new IafArmorMaterial("frost troll", 20, new int[]{2, 5, 7, 3}, 10, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 0.1F);
-    public static CustomArmorMaterial DRAGONSTEEL_FIRE_ARMOR_MATERIAL = new DragonsteelArmorMaterial("dragonsteel fire", (int) (0.02D * IafConfig.dragonsteelBaseDurability), new int[]{IafConfig.dragonsteelBaseArmor - 6, IafConfig.dragonsteelBaseArmor - 3, IafConfig.dragonsteelBaseArmor, IafConfig.dragonsteelBaseArmor - 5}, 30, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 6.0F, 0.1F);
-    public static CustomArmorMaterial DRAGONSTEEL_ICE_ARMOR_MATERIAL = new DragonsteelArmorMaterial("dragonsteel_ice", (int) (0.02D * IafConfig.dragonsteelBaseDurability), new int[]{IafConfig.dragonsteelBaseArmor - 6, IafConfig.dragonsteelBaseArmor - 3, IafConfig.dragonsteelBaseArmor, IafConfig.dragonsteelBaseArmor - 5}, 30, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 6.0F, 0.1F);
-    public static CustomArmorMaterial DRAGONSTEEL_LIGHTNING_ARMOR_MATERIAL = new DragonsteelArmorMaterial("dragonsteel_lightning", (int) (0.02D * IafConfig.dragonsteelBaseDurability), new int[]{IafConfig.dragonsteelBaseArmor - 6, IafConfig.dragonsteelBaseArmor - 3, IafConfig.dragonsteelBaseArmor, IafConfig.dragonsteelBaseArmor - 5}, 30, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 6.0F, 0.1F);
+    public static CustomArmorMaterial DRAGONSTEEL_FIRE_ARMOR_MATERIAL = new DragonsteelArmorMaterial("dragonsteel fire", (int) (0.02D * IafConfig.dragonsteelBaseDurability), new int[]{IafConfig.dragonsteelBaseArmor - 6, IafConfig.dragonsteelBaseArmor - 3, IafConfig.dragonsteelBaseArmor, IafConfig.dragonsteelBaseArmor - 5}, 30, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 6.0F, 0);
+    public static CustomArmorMaterial DRAGONSTEEL_ICE_ARMOR_MATERIAL = new DragonsteelArmorMaterial("dragonsteel_ice", (int) (0.02D * IafConfig.dragonsteelBaseDurability), new int[]{IafConfig.dragonsteelBaseArmor - 6, IafConfig.dragonsteelBaseArmor - 3, IafConfig.dragonsteelBaseArmor, IafConfig.dragonsteelBaseArmor - 5}, 30, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 6.0F, 0);
+    public static CustomArmorMaterial DRAGONSTEEL_LIGHTNING_ARMOR_MATERIAL = new DragonsteelArmorMaterial("dragonsteel_lightning", (int) (0.02D * IafConfig.dragonsteelBaseDurability), new int[]{IafConfig.dragonsteelBaseArmor - 6, IafConfig.dragonsteelBaseArmor - 3, IafConfig.dragonsteelBaseArmor, IafConfig.dragonsteelBaseArmor - 5}, 30, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 6.0F, 0);
     public static CustomToolMaterial SILVER_TOOL_MATERIAL = new CustomToolMaterial("silver", 2, 460, 1.0F, 11.0F, 18);
     public static CustomToolMaterial COPPER_TOOL_MATERIAL = new CustomToolMaterial("copper", 2, 300, 0.0F, 0.7F, 10);
     public static CustomToolMaterial DRAGONBONE_TOOL_MATERIAL = new CustomToolMaterial("Dragonbone", 4, 1660, 4.0F, 10.0F, 22);
@@ -277,16 +278,19 @@ public class IafItemRegistry {
     public static final Item TIDE_TRIDENT = new ItemTideTrident();
     public static final Item CHAIN = new ItemChain(false);
     public static final Item CHAIN_STICKY = new ItemChain(true);
-    public static final Item DRAGONSTEEL_FIRE_INGOT = new ItemGeneric("dragonsteel_fire_ingot");
-    public static final Item DRAGONSTEEL_FIRE_SWORD = new ItemModSword(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_sword");
-    public static final Item DRAGONSTEEL_FIRE_PICKAXE = new ItemModPickaxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_pickaxe");
-    public static final Item DRAGONSTEEL_FIRE_AXE = new ItemModAxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_axe");
-    public static final Item DRAGONSTEEL_FIRE_SHOVEL = new ItemModShovel(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_shovel");
-    public static final Item DRAGONSTEEL_FIRE_HOE = new ItemModHoe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_hoe");
-    public static final Item DRAGONSTEEL_FIRE_HELMET = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 0, EquipmentSlotType.HEAD, "dragonsteel_fire_helmet", "iceandfire.dragonsteel_fire_helmet");
-    public static final Item DRAGONSTEEL_FIRE_CHESTPLATE = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 1, EquipmentSlotType.CHEST, "dragonsteel_fire_chestplate", "iceandfire.dragonsteel_fire_chestplate");
-    public static final Item DRAGONSTEEL_FIRE_LEGGINGS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 2, EquipmentSlotType.LEGS, "dragonsteel_fire_leggings", "iceandfire.dragonsteel_fire_leggings");
-    public static final Item DRAGONSTEEL_FIRE_BOOTS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 3, EquipmentSlotType.FEET, "dragonsteel_fire_boots", "iceandfire.dragonsteel_fire_boots");
+    // NOTE: tweakbsd Dragonsteel of type fire added Properties for func_234689_a_() aka. isImmuneToFire()
+    public static final Item DRAGONSTEEL_FIRE_INGOT = new ItemGeneric("dragonsteel_fire_ingot", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_SWORD = new ItemModSword(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_sword", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_PICKAXE = new ItemModPickaxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_pickaxe", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_AXE = new ItemModAxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_axe", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_SHOVEL = new ItemModShovel(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_shovel", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_HOE = new ItemModHoe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_hoe", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_HELMET = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 0, EquipmentSlotType.HEAD, "dragonsteel_fire_helmet", "iceandfire.dragonsteel_fire_helmet", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_CHESTPLATE = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 1, EquipmentSlotType.CHEST, "dragonsteel_fire_chestplate", "iceandfire.dragonsteel_fire_chestplate", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_LEGGINGS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 2, EquipmentSlotType.LEGS, "dragonsteel_fire_leggings", "iceandfire.dragonsteel_fire_leggings", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_BOOTS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 3, EquipmentSlotType.FEET, "dragonsteel_fire_boots", "iceandfire.dragonsteel_fire_boots", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+
+    // NOTE: not fire immune dragonsteel
     public static final Item DRAGONSTEEL_ICE_INGOT = new ItemGeneric("dragonsteel_ice_ingot");
     public static final Item DRAGONSTEEL_ICE_SWORD = new ItemModSword(DRAGONSTEEL_ICE_TOOL_MATERIAL, "dragonsteel_ice_sword");
     public static final Item DRAGONSTEEL_ICE_PICKAXE = new ItemModPickaxe(DRAGONSTEEL_ICE_TOOL_MATERIAL, "dragonsteel_ice_pickaxe");

@@ -19,7 +19,8 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
+/*
+public class PixieAIPickupCakeItem<T extends ItemEntity> extends TargetGoal {
     protected final DragonAITargetItems.Sorter theNearestAttackableTargetSorter;
     protected final Predicate<? super ItemEntity> targetEntitySelector;
     protected ItemEntity targetEntity;
@@ -104,16 +105,16 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
                     PlayerEntity owner = this.goalOwner.world.getPlayerByUuid(this.targetEntity.getThrowerId());
                     pixie.setTamed(true);
                     pixie.setOwnerId(owner.getUniqueID());
-                    pixie.setSitting(true);
                     // NOTE: setOnGround()
                     pixie.func_230245_c_(true);
 
-
+                    // NOTE: Make sitting !
+                    //pixie.func_233686_v_(true);
                 }
             }
 
             pixie.setHeldItem(Hand.MAIN_HAND, this.targetEntity.getItem());
-            this.targetEntity.getItem().shrink(1);
+            //this.targetEntity.getItem().shrink(1);
             pixie.playSound(IafSoundRegistry.PIXIE_TAUNT, 1F, 1F);
             resetTask();
         }
@@ -142,3 +143,5 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
         }
     }
 }
+
+ */

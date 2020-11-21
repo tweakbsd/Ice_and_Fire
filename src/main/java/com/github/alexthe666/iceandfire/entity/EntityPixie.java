@@ -2,6 +2,7 @@ package com.github.alexthe666.iceandfire.entity;
 
 import java.util.EnumSet;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -65,6 +66,11 @@ public class EntityPixie extends TameableEntity {
 
     public static final float[][] PARTICLE_RGB = new float[][]{new float[]{1F, 0.752F, 0.792F}, new float[]{0.831F, 0.662F, 1F}, new float[]{0.513F, 0.843F, 1F}, new float[]{0.654F, 0.909F, 0.615F}, new float[]{0.996F, 0.788F, 0.407F}};
     private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPixie.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> SITTING = EntityDataManager.createKey(EntityPixie.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> COMMAND = EntityDataManager.createKey(EntityHippogryph.class, DataSerializers.VARINT);
+
+    public static final int STEAL_COOLDOWN = 3000;
+
     public Effect[] positivePotions = new Effect[]{Effects.STRENGTH, Effects.JUMP_BOOST, Effects.SPEED, Effects.LUCK, Effects.HASTE};
     public Effect[] negativePotions = new Effect[]{Effects.WEAKNESS, Effects.NAUSEA, Effects.SLOWNESS, Effects.UNLUCK, Effects.MINING_FATIGUE};
     public boolean slowSpeed = false;
@@ -72,6 +78,7 @@ public class EntityPixie extends TameableEntity {
     public int ticksHeldItemFor;
     private BlockPos housePos;
     public int stealCooldown = 0;
+    private boolean isSitting;
 
     public EntityPixie(EntityType type, World worldIn) {
         super(type, worldIn);
@@ -106,17 +113,31 @@ public class EntityPixie extends TameableEntity {
         return entity.func_233580_cy_();
     }
 
-    // NOTE: tweakbsd helper
-    protected boolean isSitting() {
-        //return this.func_233684_eK_();
-
-        return this.func_233685_eM_();
+    // NOTE: tweakbsd Sitting helper
+    public boolean isSitting() {
+        //if (world.isRemote) {
+            boolean isSitting = (this.dataManager.get(TAMED).byteValue() & 1) != 0;
+            this.isSitting = isSitting;
+            this.func_233687_w_(isSitting);
+            return isSitting;
+        //}
+        //return this.isSitting;
     }
 
-    // NOTE: tweakbsd helper
-    protected void setSitting(boolean sitting) {
-        this.func_233686_v_(sitting);
+    public void setSitting(boolean sitting) {
+        //if (!world.isRemote) {
+            this.isSitting = sitting;
+            this.func_233687_w_(sitting);
+        //}
+        byte b0 = this.dataManager.get(TAMED).byteValue();
+        if (sitting) {
+            this.dataManager.set(TAMED, Byte.valueOf((byte) (b0 | 1)));
+        } else {
+            this.dataManager.set(TAMED, Byte.valueOf((byte) (b0 & -2)));
+        }
+
     }
+
 
     protected int getExperiencePoints(PlayerEntity player) {
         return 3;
@@ -126,7 +147,7 @@ public class EntityPixie extends TameableEntity {
         return MobEntity.func_233666_p_()
 
                 //FOLLOW_RANGE
-                .func_233815_a_(Attributes.field_233819_b_, 20D)  // NOTE: tweakbsd Additions added generic.follow_range with a default of 20
+                //.func_233815_a_(Attributes.field_233819_b_, 20D)  // NOTE: tweakbsd Additions added generic.follow_range with a default of 20
                 //HEALTH
                 .func_233815_a_(Attributes.field_233818_a_, 10D)
                 //SPEED
@@ -139,13 +160,29 @@ public class EntityPixie extends TameableEntity {
         if (!this.world.isRemote && this.getRNG().nextInt(3) == 0 && this.getHeldItem(Hand.MAIN_HAND) != ItemStack.EMPTY && !properties.isStone()) {
             this.entityDropItem(this.getHeldItem(Hand.MAIN_HAND), 0);
             this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
-            this.stealCooldown = 6000;
+            this.stealCooldown = STEAL_COOLDOWN;
             return true;
         }
         if (this.isOwnerClose() && (source == DamageSource.FALLING_BLOCK || source == DamageSource.IN_WALL || this.getOwner() != null && source.getTrueSource() == this.getOwner())) {
             return false;
         }
         return super.attackEntityFrom(source, amount);
+    }
+
+    // NOTE: Make invulnerable to damage from owner !
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        boolean invulnerable = super.isInvulnerableTo(source);
+        if(!invulnerable) {
+            Entity owner = this.getOwner();
+            if(owner != null && source.getTrueSource() == owner) {
+                System.out.println("EntityPixie ignored Damage by owner !");
+                return true;
+            } else {
+                System.out.println("EntityPixie.isInvulnerableTo() " + invulnerable + " from DamageSource"  + source.toString());
+            }
+        }
+        return invulnerable;
     }
 
     public void onDeath(DamageSource cause) {
@@ -162,7 +199,9 @@ public class EntityPixie extends TameableEntity {
     @Override
     protected void registerData() {
         super.registerData();
-        this.getDataManager().register(COLOR, Integer.valueOf(0));
+        this.dataManager.register(COLOR, Integer.valueOf(0));
+        this.dataManager.register(SITTING, Boolean.valueOf(false));
+        this.dataManager.register(COMMAND, Integer.valueOf(0));
     }
 
     protected void collideWithEntity(Entity entityIn) {
@@ -174,6 +213,7 @@ public class EntityPixie extends TameableEntity {
     protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
+    // NOTE: onRightClick()
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         if (this.isOwner(player)) {
 
@@ -190,7 +230,21 @@ public class EntityPixie extends TameableEntity {
                 this.playSound(IafSoundRegistry.PIXIE_TAUNT, 1F, 1F);
                 return ActionResultType.SUCCESS;
             } else {
-                this.func_233686_v_(!this.func_233684_eK_());
+
+
+                this.setCommand(this.getCommand() + 1);
+                if (this.getCommand() > 1) {
+                    this.setCommand(0);
+                }
+
+                // NOTE: Make sit ?!?
+/*
+                boolean sittingChange = !this.func_233684_eK_();
+                this.setSitting(sittingChange);
+                this.func_233686_v_(sittingChange);
+*/
+                System.out.println("EntityPixie.onRightClick() -> Changed sitting via setCommand()");
+
                 return ActionResultType.SUCCESS;
             }
         } else if (player.getHeldItem(hand).getItem() == Item.getItemFromBlock(IafBlockRegistry.JAR_EMPTY) && !this.isTamed()) {
@@ -219,7 +273,7 @@ public class EntityPixie extends TameableEntity {
             if (!world.isRemote) {
                 if (!this.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
                     this.entityDropItem(this.getHeldItem(Hand.MAIN_HAND), 0.0F);
-                    this.stealCooldown = 6000;
+                    this.stealCooldown = STEAL_COOLDOWN;
                 }
 
                 this.entityDropItem(stack, 0.0F);
@@ -239,7 +293,7 @@ public class EntityPixie extends TameableEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PixieAIFollowOwner(this, 1.0D, 2.0F, 4.0F));
-        this.goalSelector.addGoal(5, new PixieAIPickupItem(this, false));  // NOTE: tweakbsd priority changed!
+        this.goalSelector.addGoal(4, new PixieAIPickupItem(this, false));  // NOTE: tweakbsd priority changed!
         this.goalSelector.addGoal(2, new PixieAIFlee(this, PlayerEntity.class, 10, new Predicate<PlayerEntity>() {
             @Override
             public boolean apply(@Nullable PlayerEntity entity) {
@@ -259,6 +313,12 @@ public class EntityPixie extends TameableEntity {
         spawnDataIn = super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         this.setColor(this.rand.nextInt(5));
         this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
+
+        if(dataTag != null) {
+
+            System.out.println("EntityPixie spawned with dataTag: " + dataTag.toString());
+        }
+
         return spawnDataIn;
     }
 
@@ -271,8 +331,43 @@ public class EntityPixie extends TameableEntity {
         return this.getPosY() > maxY;
     }
 
+    public int getCommand() {
+        return Integer.valueOf(this.dataManager.get(COMMAND).intValue());
+    }
+
+    public void setCommand(int command) {
+        this.dataManager.set(COMMAND, Integer.valueOf(command));
+        if (command == 1) {
+            this.setSitting(true);
+        } else {
+            this.setSitting(false);
+        }
+    }
+
+
     public void livingTick() {
         super.livingTick();
+
+        if (!this.world.isRemote) {
+
+            if (this.isSitting() && this.getCommand() != 1) {
+
+                System.out.println("EntityPixie.livingTick() setTitting(false)");
+
+                this.setSitting(false);
+                this.func_233687_w_(false);
+            }
+            if (!this.isSitting() && this.getCommand() == 1) {
+
+                System.out.println("EntityPixie.livingTick() setTitting(true)");
+
+                this.setSitting(true);
+                this.func_233687_w_(true);
+            }
+            if (this.isSitting()) {
+                this.getNavigator().clearPath();
+            }
+        }
 
         if(stealCooldown > 0){
             stealCooldown--;
@@ -328,6 +423,8 @@ public class EntityPixie extends TameableEntity {
         this.getDataManager().set(COLOR, color);
     }
 
+
+
     @Override
     public void readAdditional(CompoundNBT compound) {
         this.setColor(compound.getInt("Color"));
@@ -335,44 +432,21 @@ public class EntityPixie extends TameableEntity {
         this.stealCooldown = compound.getInt("StealCooldown");
         this.ticksHeldItemFor = compound.getInt("HoldingTicks");
 
+        this.setSitting(compound.getBoolean("PixieSitting"));
+        this.setCommand(compound.getInt("Command"));
+        System.out.println("EntitiyPixie.readAdditional()  setCommand() ran...");
 
         super.readAdditional(compound);
-
-        // NOTE: tweakbsd isTamed() addition to save position in world and if sitting or not
-        if(this.isTamed() && compound.contains("PosX") && compound.contains("PosY") && compound.contains("PosZ")) {
-            double x = compound.getDouble("PosX");
-            double y = compound.getDouble("PosY");
-            double z = compound.getDouble("PosZ");
-
-            this.setRawPosition(x, y, z);
-            if(compound.contains("PixieSitting")) {
-
-                boolean isSitting = compound.getBoolean("PixieSitting");
-                this.func_233687_w_(isSitting);  // NOTE: Set private field this.field_233683_bw_
-                this.func_233686_v_(isSitting);  // set stuff in this.dataManager
-            }
-
-        }
-
-
     }
 
     @Override
     public void writeAdditional(CompoundNBT compound) {
         compound.putInt("Color", this.getColor());
+        compound.putInt("Command", this.getCommand());
 
         compound.putInt("StealCooldown", this.stealCooldown);
         compound.putInt("HoldingTicks", this.ticksHeldItemFor);
-
-        // NOTE: tweakbsd isTamed() addition
-        if(this.isTamed()) {
-            compound.putDouble("PosX", this.getPosX());
-            compound.putDouble("PosY", this.getPosY());
-            compound.putDouble("PosZ", this.getPosZ());
-
-            // NOTE: This is saved to restore sitting pixie upon loading World
-            compound.putBoolean("PixieSitting", this.isSitting());
-        }
+        compound.putBoolean("PixieSitting", this.isSitting());
 
         super.writeAdditional(compound);
     }

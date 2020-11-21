@@ -31,6 +31,13 @@ public class ItemModPickaxe extends PickaxeItem {
 
     private final CustomToolMaterial toolMaterial;
 
+    // NOTE: tweakbsd added ctor
+    public ItemModPickaxe(CustomToolMaterial toolmaterial, String gameName, Item.Properties properties) {
+        super(toolmaterial, 1, -2.8F, properties.group(IceAndFire.TAB_ITEMS));
+        this.toolMaterial = toolmaterial;
+        this.setRegistryName(IceAndFire.MODID, gameName);
+    }
+
     public ItemModPickaxe(CustomToolMaterial toolmaterial, String gameName) {
         super(toolmaterial, 1, -2.8F, new Item.Properties().group(IceAndFire.TAB_ITEMS));
         this.toolMaterial = toolmaterial;

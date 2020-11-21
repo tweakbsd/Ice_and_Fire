@@ -22,6 +22,12 @@ public class ItemGeneric extends Item {
         this.setRegistryName(IceAndFire.MODID, name);
     }
 
+    // NOTE: tweakbsd added ctor
+    public ItemGeneric(String name, Item.Properties properties) {
+        super(properties.group(IceAndFire.TAB_ITEMS));
+        this.setRegistryName(IceAndFire.MODID, name);
+    }
+
     public ItemGeneric(String name, int textLength) {
         super(new Item.Properties().group(IceAndFire.TAB_ITEMS));
         this.setRegistryName(IceAndFire.MODID, name);

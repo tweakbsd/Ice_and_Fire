@@ -2,8 +2,17 @@ package com.github.alexthe666.iceandfire.item;
 
 import com.github.alexthe666.citadel.server.item.CustomArmorMaterial;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.registry.Registry;
+
+import javax.annotation.Nonnull;
+import java.util.UUID;
 
 public class IafArmorMaterial extends CustomArmorMaterial {
 
@@ -18,5 +27,6 @@ public class IafArmorMaterial extends CustomArmorMaterial {
     public int getDurability(EquipmentSlotType slotIn) {
         return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.maxDamageFactor;
     }
+
 
 }
