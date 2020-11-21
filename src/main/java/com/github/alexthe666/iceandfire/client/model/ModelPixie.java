@@ -139,15 +139,16 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
             this.Left_Arm.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.0F * f1 * 0.5F / 1;
         }
 
-        boolean sittingInherited = entity.func_233684_eK_();
-        boolean sittingOwn = entity.isSitting();
 
-        System.out.println("ModelPixie sittingData " + sittingInherited);
-        System.out.println("ModelPixie sittingData " + sittingOwn);
 
-        if (sittingInherited || sittingOwn /*entity.func_233684_eK_()*/) {
 
-            System.out.println("ModelPixie.setRotationAngles() rendering as sitting.");
+        // NOTE: It was troublesome rendering upon world joining
+        //System.out.println("ModelPixie sittingData " + sittingInherited);
+        //System.out.println("ModelPixie sittingData " + sittingOwn);
+
+        if (entity.isSitting() /*entity.func_233684_eK_()*/) {
+
+            //System.out.println("ModelPixie.setRotationAngles() rendering as sitting.");
 
             this.Right_Arm.rotateAngleX += -((float) Math.PI / 5F);
             this.Left_Arm.rotateAngleX += -((float) Math.PI / 5F);
@@ -166,7 +167,7 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
             this.Right_Wing2.rotateAngleZ = (float) Math.toRadians(8);
         } else {
 
-            System.out.println("ModelPixie.setRotationAngles() rendering NOT sitting. ticksExisted:  " + entity.ticksExisted);
+            //System.out.println("ModelPixie.setRotationAngles() rendering NOT sitting. ticksExisted:  " + entity.ticksExisted);
 
             this.chainWave(LEFT_WINGS, speed_fly, degree_fly * 0.75F, 1, f2, 1);
             this.chainWave(RIGHT_WINGS, speed_fly, degree_fly * 0.75F, 1, f2, 1);

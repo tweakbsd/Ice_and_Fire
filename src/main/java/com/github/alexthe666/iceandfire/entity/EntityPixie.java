@@ -232,18 +232,11 @@ public class EntityPixie extends TameableEntity {
             } else {
 
 
+                // NOTE: Make sit via a check in livingTick()
                 this.setCommand(this.getCommand() + 1);
                 if (this.getCommand() > 1) {
                     this.setCommand(0);
                 }
-
-                // NOTE: Make sit ?!?
-/*
-                boolean sittingChange = !this.func_233684_eK_();
-                this.setSitting(sittingChange);
-                this.func_233686_v_(sittingChange);
-*/
-                System.out.println("EntityPixie.onRightClick() -> Changed sitting via setCommand()");
 
                 return ActionResultType.SUCCESS;
             }
@@ -315,7 +308,6 @@ public class EntityPixie extends TameableEntity {
         this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
 
         if(dataTag != null) {
-
             System.out.println("EntityPixie spawned with dataTag: " + dataTag.toString());
         }
 
@@ -350,19 +342,14 @@ public class EntityPixie extends TameableEntity {
 
         if (!this.world.isRemote) {
 
+            // NOTE: This code was taken from EntityHippogryph basically same idea
             if (this.isSitting() && this.getCommand() != 1) {
 
-                System.out.println("EntityPixie.livingTick() setTitting(false)");
-
                 this.setSitting(false);
-                this.func_233687_w_(false);
             }
             if (!this.isSitting() && this.getCommand() == 1) {
 
-                System.out.println("EntityPixie.livingTick() setTitting(true)");
-
                 this.setSitting(true);
-                this.func_233687_w_(true);
             }
             if (this.isSitting()) {
                 this.getNavigator().clearPath();
@@ -377,7 +364,6 @@ public class EntityPixie extends TameableEntity {
         }else{
             ticksHeldItemFor = 0;
         }
-
 
 
         if (!this.func_233684_eK_() && !this.isBeyondHeight()) {
@@ -434,7 +420,6 @@ public class EntityPixie extends TameableEntity {
 
         this.setSitting(compound.getBoolean("PixieSitting"));
         this.setCommand(compound.getInt("Command"));
-        System.out.println("EntitiyPixie.readAdditional()  setCommand() ran...");
 
         super.readAdditional(compound);
     }
@@ -525,6 +510,7 @@ public class EntityPixie extends TameableEntity {
         }
     }
 
+    // TODO: Put into PixieAIMoveRandom
     class AIMoveRandom extends Goal {
         BlockPos target;
 
@@ -559,13 +545,14 @@ public class EntityPixie extends TameableEntity {
         }
     }
 
+    // TODO: Put into PixieAIEnterHouse
     class AIEnterHouse extends Goal {
         public AIEnterHouse() {
             this.setMutexFlags(EnumSet.of(Flag.MOVE));
         }
 
         public boolean shouldExecute() {
-            if (EntityPixie.this.isOwnerClose() || EntityPixie.this.getMoveHelper().isUpdating() || EntityPixie.this.func_233684_eK_() || EntityPixie.this.rand.nextInt(20) != 0 || EntityPixie.this.ticksUntilHouseAI != 0) {
+            if (EntityPixie.this.isOwnerClose() || EntityPixie.this.getMoveHelper().isUpdating() || EntityPixie.this.func_233684_eK_()/*isSiting() */ || EntityPixie.this.rand.nextInt(20) != 0 || EntityPixie.this.ticksUntilHouseAI != 0) {
                 return false;
             }
 
