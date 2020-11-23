@@ -598,7 +598,7 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
         super.registerData();
         this.dataManager.register(HUNGER, Integer.valueOf(0));
         this.dataManager.register(AGE_TICKS, Integer.valueOf(0));
-        this.dataManager.register(GENDER, Boolean.valueOf(false));
+        this.dataManager.register(GENDER, Boolean.valueOf(this.rand.nextBoolean()));  // NOTE: Randomizez here
         this.dataManager.register(VARIANT, Integer.valueOf(0));
         this.dataManager.register(SLEEPING, Boolean.valueOf(false));
         this.dataManager.register(FIREBREATHING, Boolean.valueOf(false));
@@ -906,7 +906,7 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
     }
 
     public boolean isMale() {
-        return this.dataManager.get(GENDER).booleanValue();
+        return Boolean.valueOf(this.dataManager.get(GENDER).booleanValue());
     }
 
     public boolean isModelDead() {
@@ -956,6 +956,10 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
     }
 
     public void setGender(boolean male) {
+
+        // NOTE: tweakbsd added logging
+        System.out.println("EntitiyDragonBase().setGender() " + DragonType.getGenderName(male));
+
         this.dataManager.set(GENDER, male);
     }
 
@@ -1542,7 +1546,9 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
     @Nullable
     public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
         spawnDataIn = super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-        this.setGender(this.getRNG().nextBoolean());
+
+        // NOTE: tweakbsd changes
+        this.setGender(DragonType.generateRandomGender());
         int age = this.getRNG().nextInt(80) + 1;
         this.growDragon(age);
         this.setVariant(new Random().nextInt(4));

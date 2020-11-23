@@ -115,6 +115,7 @@ public class ItemDragonHorn extends Item {
                 String id = stack.getTag().getString("DragonHornEntityID");
                 if(EntityType.byKey(id).isPresent()){
                     EntityType type = EntityType.byKey(id).get();
+
                     tooltip.add(new TranslationTextComponent(type.getTranslationKey()).func_240699_a_(getTextColorForEntityType(type)));
                     String name = new TranslationTextComponent("dragon.unnamed").getString();
                     if(!entityTag.getString("CustomName").isEmpty()){
@@ -125,6 +126,8 @@ public class ItemDragonHorn extends Item {
                     }
                     tooltip.add(new StringTextComponent(name).func_240699_a_(TextFormatting.GRAY));
                     String gender = new TranslationTextComponent("dragon.gender").getString() + " " + new TranslationTextComponent((entityTag.getBoolean("Gender") ? "dragon.gender.male" : "dragon.gender.female")).getString();
+                    System.out.println("ItemDragonHorn() entityId: " + id + " gender: " + gender);
+
                     tooltip.add(new StringTextComponent(gender).func_240699_a_(TextFormatting.GRAY));
                     int stagenumber = entityTag.getInt("AgeTicks") / 24000;
                     int stage1 = 0;

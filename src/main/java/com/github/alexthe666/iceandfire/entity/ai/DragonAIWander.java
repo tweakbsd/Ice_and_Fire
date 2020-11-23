@@ -27,10 +27,12 @@ public class DragonAIWander extends Goal {
         this.executionChance = chance;
         this.setMutexFlags(EnumSet.of(Flag.MOVE));
 
+        this.dragon.stepHeight = 1.0F;
     }
 
     @Override
     public boolean shouldExecute() {
+
         if (!dragon.canMove()) {
             return false;
         }
@@ -65,6 +67,7 @@ public class DragonAIWander extends Goal {
 
     @Override
     public void startExecuting() {
+
         this.dragon.getNavigator().tryMoveToXYZ(this.xPosition, this.yPosition, this.zPosition, this.speed);
     }
 

@@ -46,7 +46,10 @@ public class WorldGenLightningDragonRoosts extends Feature<NoFeatureConfig> {
         if(!worldIn.getFluidState(worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, position).down()).isEmpty()){
             return false;
         }
-        isMale = new Random().nextBoolean();
+        //isMale = new Random().nextBoolean();
+        isMale = (new Random().nextInt(100) > 50);
+        System.out.println("DragonGen() isMale: " + isMale);
+
         int boulders = 0;
         int radius = 12 + rand.nextInt(8);
         position = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, position);

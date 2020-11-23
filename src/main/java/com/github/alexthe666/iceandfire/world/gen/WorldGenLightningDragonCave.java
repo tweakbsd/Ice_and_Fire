@@ -69,7 +69,10 @@ public class WorldGenLightningDragonCave extends Feature<NoFeatureConfig> {
         }
         List<SphereInfo> sphereList = new ArrayList<SphereInfo>();
         position = new BlockPos(position.getX(), 20 + rand.nextInt(20), position.getZ());
-        isMale = new Random().nextBoolean();
+        //isMale = new Random().nextBoolean();
+        isMale = (new Random().nextInt(100) > 50);
+        System.out.println("DragonGen() isMale: " + isMale);
+
         int dragonAge = 75 + rand.nextInt(50);
         int radius = (int) (dragonAge * 0.2F) + rand.nextInt(8);
         createShell(worldIn, rand, position, radius, sphereList);

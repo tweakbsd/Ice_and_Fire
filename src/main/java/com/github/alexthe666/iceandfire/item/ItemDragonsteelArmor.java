@@ -40,7 +40,7 @@ public class ItemDragonsteelArmor extends ArmorItem implements IProtectAgainstDr
     }
     public ItemDragonsteelArmor(IArmorMaterial material, int renderIndex, EquipmentSlotType slot, String gameName, String name) {
 
-        // NOTE: func_234689_a_ -> isImmuneToFire()
+
         super(material, slot, new Item.Properties().group(IceAndFire.TAB_ITEMS));
         this.material = material;
         this.setRegistryName(IceAndFire.MODID, gameName);
@@ -91,11 +91,16 @@ public class ItemDragonsteelArmor extends ArmorItem implements IProtectAgainstDr
             int reduction = material.getDamageReductionAmount(slot);
 
             // NOTE: round to lower number of -> reduction / 175 <- then make it
-            double knockbackResistance = (double)((int)Math.ceil(((double)reduction / 150.0F) * 1000.0) / 1000);
+            double knockbackResistance = Math.floor( ((double)reduction / 175.0) * 100) / 100.0D;
+            String name = "Dragonsteel modifier " + this.slot;
+
+            System.out.println("ItemDragonsteelArmor.getAttributeModifier() " + name + " Knockback Resistance added: " + knockbackResistance);
+
+
 
             // NOTE: tweakbsd field_233820_c_ aka KNOCKBACK_RESISTANCE
             ret.put(Attributes.field_233820_c_,
-                    new AttributeModifier(uuid, "Dragonsteel modifier " + this.slot, knockbackResistance, AttributeModifier.Operation.ADDITION));
+                    new AttributeModifier(uuid, name, knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
         return ret;
     }

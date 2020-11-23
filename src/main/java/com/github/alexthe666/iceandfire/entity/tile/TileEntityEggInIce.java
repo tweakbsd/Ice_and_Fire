@@ -96,12 +96,20 @@ public class TileEntityEggInIce extends TileEntity implements ITickableTileEntit
     public void tick() {
         age++;
         if (age >= IafConfig.dragonEggTime && type != null) {
+
+
             world.destroyBlock(pos, false);
             world.setBlockState(pos, Blocks.WATER.getDefaultState());
             EntityIceDragon dragon = new EntityIceDragon(world);
             dragon.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
             dragon.setVariant(type.ordinal() - 4);
-            dragon.setGender(new Random().nextBoolean());
+
+            //dragon.setGender(new Random().nextBoolean());
+
+            boolean willBeMale = (new Random().nextInt(100) > 50);
+            System.out.println("ICE DRAGON IS HATCHING via ... tick() entityId: " + dragon.getEntityId() + " willBeMale: " + willBeMale);
+
+            dragon.setGender(willBeMale);
             dragon.setTamed(true);
             dragon.setHunger(50);
             dragon.setOwnerId(ownerUUID);

@@ -12,6 +12,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.Random;
 
 public class DragonType {
 
@@ -24,6 +27,17 @@ public class DragonType {
 
     public DragonType(String name) {
         this.name = name;
+    }
+
+    // NOTE: tweakbsd added a fair random boolean algorithm for gender generation
+    private static final int DRAGON_GENERATE_RANDOM_GENDER_BOUND = 100;
+    public static boolean generateRandomGender() {
+        return new Random().nextInt(DRAGON_GENERATE_RANDOM_GENDER_BOUND) > (DRAGON_GENERATE_RANDOM_GENDER_BOUND >> 2);
+    }
+
+    // NOTE: tweakbsd adde
+    public static String getGenderName(boolean isMale) {
+        return new TranslationTextComponent("dragon.gender").getString() + " " + new TranslationTextComponent((isMale ? "dragon.gender.male" : "dragon.gender.female")).getString();
     }
 
     public static String getNameFromInt(int type){
@@ -64,6 +78,11 @@ public class DragonType {
     }
 
     public void updateEggCondition(EntityDragonEgg egg) {
+
+        // NOTE: tweakbsd added
+        // TODO: Optimize, it's not used for IceDragon's cause they use a TileEntity for hatching
+        boolean isMale = DragonType.generateRandomGender();
+
         BlockPos pos = new BlockPos(egg.getPositionVec());
         if (this == FIRE) {
             if (egg.world.getBlockState(pos).getMaterial() == Material.FIRE) {
@@ -77,7 +96,11 @@ public class DragonType {
                         dragon.setCustomName(egg.getCustomName());
                     }
                     dragon.setVariant(egg.getEggType().ordinal());
-                    dragon.setGender(egg.getRNG().nextBoolean());
+                    dragon.setGender(isMale);
+
+                    // NOTE: tweakbsd added
+                    System.out.println("DragonType.updateEggCondition() Fire Dragon is hatching -> entityId: " + dragon.getEntityId() + "gender: " + DragonType.getGenderName(isMale));
+
                     dragon.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
                     dragon.setHunger(50);
                     if (!egg.world.isRemote) {
@@ -116,7 +139,11 @@ public class DragonType {
                     dragon.setCustomName(egg.getCustomName());
                 }
                 dragon.setVariant(egg.getEggType().ordinal() - 8);
-                dragon.setGender(egg.getRNG().nextBoolean());
+                dragon.setGender(isMale);
+
+                // NOTE: tweakbsd added
+                System.out.println("DragonType.updateEggCondition() Lightning Dragon is hatching -> entityId: " + dragon.getEntityId() + "gender: " + DragonType.getGenderName(isMale));
+
                 dragon.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
                 dragon.setHunger(50);
                 if (!egg.world.isRemote) {
