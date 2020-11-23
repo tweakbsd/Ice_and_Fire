@@ -224,7 +224,7 @@ public class IceAndFireMainMenu extends MainMenuScreen {
         GlStateManager.enableTexture();
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableBlend();
-        // NOTE: tweakbsd added myself :-)
+        // NOTE: tweakbsd added myself :-) cause it's my version of this mod
         this.getMinecraft().fontRenderer.func_238405_a_(ms, "Ice and Fire " + TextFormatting.RED  + "(tweakbsd) " + TextFormatting.YELLOW + IceAndFire.VERSION, 2, height - 10, 0xFFFFFFFF);
         GlStateManager.pushMatrix();
         this.getMinecraft().getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);

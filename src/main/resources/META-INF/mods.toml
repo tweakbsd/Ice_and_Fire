@@ -4,10 +4,10 @@ issueTrackerURL="https://github.com/Alex-the-666/ice-and-fire/issues" #optional
 license="GNU LESSER GENERAL PUBLIC LICENSE"
 [[mods]] #mandatory
 modId="iceandfire" #mandatory
-version="2.1.1-1.16.3" #mandatory
+version="2.1.3-1.16.3" #mandatory
 displayName="Ice and Fire" #mandatory
 displayURL="https://www.curseforge.com/minecraft/mc-mods/ice-and-fire-dragons" #optional
-authors="Alexthe666" #optional
+authors="Alexthe666, tweakbsd" #optional
 description='''Dragons and other mythological creatures in minecraft.'''
 [[dependencies.iceandfire]] #optional
     # the modid of the dependency
