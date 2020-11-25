@@ -162,7 +162,8 @@ public class ServerEvents {
                     if (!DragonUtils.hasSameOwner(cockatrice, attacker)) {
                         if (attacker instanceof PlayerEntity) {
                             PlayerEntity player = (PlayerEntity) attacker;
-                            if (!player.isCreative() && !cockatrice.isOwner(player)) {
+                            // NOTE: tweakbsd added spectator mode bugfix for Cockatrice
+                            if (!player.isCreative() && !cockatrice.isOwner(player) && !player.isSpectator()) {
                                 cockatrice.setAttackTarget(player);
                             }
                         } else {
