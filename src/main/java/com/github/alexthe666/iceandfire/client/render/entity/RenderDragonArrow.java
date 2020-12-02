@@ -25,6 +25,7 @@ public class RenderDragonArrow extends ArrowRenderer {
         super(render);
     }
 
+    /*
     @Override
     public void render(AbstractArrowEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
@@ -71,7 +72,16 @@ public class RenderDragonArrow extends ArrowRenderer {
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -8, 2, 0, 0.0F, 0.15625F, 0, 1, 0, packedLightIn);
         }
         matrixStackIn.pop();
+
+
+        net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
+        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn))) {
+            super.renderName(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
+        }
+
     }
+    */
 
     @Override
     public ResourceLocation getEntityTexture(Entity entity) {

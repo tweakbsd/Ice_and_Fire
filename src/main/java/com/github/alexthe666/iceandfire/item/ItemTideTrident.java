@@ -41,9 +41,17 @@ import net.minecraft.world.World;
 
 public class ItemTideTrident extends TridentItem {
 
+    // NOTE: tweakbsd added
+    public static float ATTACK_DAMAGE = 13.0F;
+
     public ItemTideTrident() {
         super(new Item.Properties().group(IceAndFire.TAB_ITEMS).maxDamage(400));
         this.setRegistryName(IceAndFire.MODID, "tide_trident");
+    }
+
+    @Override
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.SPEAR;
     }
 
     @Override
@@ -113,7 +121,7 @@ public class ItemTideTrident extends TridentItem {
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            builder.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double)12.0D, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double)(ATTACK_DAMAGE - 1.0F), AttributeModifier.Operation.ADDITION));
             builder.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double)-2.9F, AttributeModifier.Operation.ADDITION));
         }
 

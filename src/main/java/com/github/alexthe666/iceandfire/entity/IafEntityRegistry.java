@@ -92,7 +92,6 @@ public class IafEntityRegistry {
     public static final EntityType<EntityGhost> GHOST = registerEntity(EntityType.Builder.create(EntityGhost::new, EntityClassification.CREATURE).size(0.8F, 1.9F).immuneToFire(), "ghost");
     public static final EntityType<EntityGhostSword> GHOST_SWORD = registerEntity(EntityType.Builder.create(EntityGhostSword::new, EntityClassification.MISC).size(0.5F, 0.5F).setCustomClientFactory(EntityGhostSword::new), "ghost_sword");
 
-
     private static final EntityType registerEntity(EntityType.Builder builder, String entityName) {
         ResourceLocation nameLoc = new ResourceLocation(IceAndFire.MODID, entityName);
         return (EntityType) builder.build(entityName).setRegistryName(nameLoc);

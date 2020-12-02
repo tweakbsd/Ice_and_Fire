@@ -45,6 +45,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -413,6 +414,12 @@ public class EntityCockatrice extends TameableEntity implements IAnimatedEntity,
         }
     }
 
+    // NOTE: added by tweakbsd
+    @Override
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == Items.POISONOUS_POTATO;
+    }
+
     public void forcePreyToLook(MobEntity mob) {
         mob.getLookController().setLookPosition(this.getPosX(), this.getPosY() + (double) this.getEyeHeight(), this.getPosZ(), (float) mob.getHorizontalFaceSpeed(), (float) mob.getVerticalFaceSpeed());
     }
@@ -421,8 +428,11 @@ public class EntityCockatrice extends TameableEntity implements IAnimatedEntity,
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         boolean flag = player.getHeldItem(hand).getItem() == Items.NAME_TAG || player.getHeldItem(hand).getItem() == Items.LEAD;
         if (flag) {
+            // NOTE: tweakbsd this calls to isBreedingItem()
             return super.func_230254_b_(player, hand);
         }
+
+        // NOTE: tweakbsd shouldn't work cause a call to this.isBreedingItem() would fail in super, but I fixed it
         if (player.getHeldItem(hand).getItem() == Items.POISONOUS_POTATO) {
             return super.func_230254_b_(player, hand);
         }

@@ -14,14 +14,16 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityDragonArrow extends AbstractArrowEntity {
 
+    public static float ATTACK_DAMAGE = 10.0F;  // NOTE: tweakbsd added constant
+
     public EntityDragonArrow(EntityType typeIn, World worldIn) {
         super(typeIn, worldIn);
-        this.setDamage(10);
+        this.setDamage(ATTACK_DAMAGE);
     }
 
     public EntityDragonArrow(EntityType typeIn, double x, double y, double z, World world) {
         super(typeIn, x, y, z, world);
-        this.setDamage(10);
+        this.setDamage(ATTACK_DAMAGE);
     }
 
     public EntityDragonArrow(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
@@ -35,12 +37,13 @@ public class EntityDragonArrow extends AbstractArrowEntity {
 
     public EntityDragonArrow(EntityType typeIn, LivingEntity shooter, World worldIn) {
         super(typeIn, shooter, worldIn);
+        this.setDamage(ATTACK_DAMAGE);  // NOTE: tweakbsd fixed call to setDamage()
     }
 
     @Override
     public void writeAdditional(CompoundNBT tagCompound) {
         super.writeAdditional(tagCompound);
-        tagCompound.putDouble("damage", 10);
+        tagCompound.putDouble("damage", ATTACK_DAMAGE);
     }
 
     @Override

@@ -106,6 +106,7 @@ import com.github.alexthe666.iceandfire.entity.util.MyrmexHive;
 import com.github.alexthe666.iceandfire.event.ClientEvents;
 import com.github.alexthe666.iceandfire.event.PlayerRenderEvents;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
+import com.github.alexthe666.iceandfire.item.ItemDragonBow;
 import com.github.alexthe666.iceandfire.item.ItemDragonHorn;
 import com.github.alexthe666.iceandfire.item.ItemSummoningCrystal;
 
@@ -119,11 +120,10 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -282,6 +282,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(IafEntityRegistry.HYDRA_MULTIPART, manager -> new RenderNothing(manager));
         RenderingRegistry.registerEntityRenderingHandler(IafEntityRegistry.GHOST, manager -> new RenderGhost(manager));
         RenderingRegistry.registerEntityRenderingHandler(IafEntityRegistry.GHOST_SWORD, manager -> new RenderGhostSword(manager));
+
         ClientRegistry.bindTileEntityRenderer(IafTileEntityRegistry.PODIUM, manager -> new RenderPodium(manager));
         ClientRegistry.bindTileEntityRenderer(IafTileEntityRegistry.IAF_LECTERN, manager -> new RenderLectern(manager));
         ClientRegistry.bindTileEntityRenderer(IafTileEntityRegistry.EGG_IN_ICE, manager -> new RenderEggInIce(manager));
@@ -340,7 +341,24 @@ public class ClientProxy extends CommonProxy {
         ItemModelsProperties.func_239418_a_(IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING, new ResourceLocation("has_dragon"), (stack, p_239428_1_, p_239428_2_) -> {
             return ItemSummoningCrystal.hasDragon(stack) ? 1.0F : 0.0F;
         });
+
+
+        // NOTE: tweakbsd fix for Dragonbone Bow not animating at all
+        IItemPropertyGetter pulling = ItemModelsProperties.func_239417_a_(Items.BOW, new ResourceLocation("pulling"));
+        IItemPropertyGetter pull = (stack, worldIn, entity) -> {
+            if (entity == null) {
+                return 0.0F;
+            } else {
+                ItemDragonBow item = ((ItemDragonBow) stack.getItem());
+                return entity.getActiveItemStack() != stack
+                        ? 0.0F
+                        : (stack.getUseDuration() - entity.getItemInUseCount()) * item.chargeVelocityMultiplier() / 20.0F;
+            }
+        };
+        ItemModelsProperties.func_239418_a_(IafItemRegistry.DRAGON_BOW.asItem(), new ResourceLocation("pulling"), pulling);
+        ItemModelsProperties.func_239418_a_(IafItemRegistry.DRAGON_BOW.asItem(), new ResourceLocation("pull"), pull);
     }
+
 
     @OnlyIn(Dist.CLIENT)
     public void spawnDragonParticle(String name, double x, double y, double z, double motX, double motY, double motZ, EntityDragonBase entityDragonBase) {
@@ -348,14 +366,15 @@ public class ClientProxy extends CommonProxy {
         if (world == null) {
             return;
         }
+        // NOTE: tweakbsd performance optim else if's, otherwise the name would be checked against all possible values
         net.minecraft.client.particle.Particle particle = null;
         if (name.equals("dragonfire")) {
             particle = new ParticleDragonFlame(world, x, y, z, motX, motY, motZ, entityDragonBase, 0);
         }
-        if (name.equals("dragonice")) {
+        else if (name.equals("dragonice")) {
             particle = new ParticleDragonFrost(world, x, y, z, motX, motY, motZ, entityDragonBase, 0);
         }
-        if (particle != null) {
+        else if (particle != null) {
             Minecraft.getInstance().particles.addEffect(particle);
         }
     }
@@ -366,38 +385,39 @@ public class ClientProxy extends CommonProxy {
         if (world == null) {
             return;
         }
+        // NOTE: tweakbsd performance optim else if's, otherwise the name would be checked against all possible values
         net.minecraft.client.particle.Particle particle = null;
         if (name.equals("dragonfire")) {
             particle = new ParticleDragonFlame(world, x, y, z, motX, motY, motZ, size);
         }
-        if (name.equals("dragonice")) {
+        else if (name.equals("dragonice")) {
             particle = new ParticleDragonFrost(world, x, y, z, motX, motY, motZ, size);
         }
-        if (name.equals("dread_torch")) {
+        else if (name.equals("dread_torch")) {
             particle = new ParticleDreadTorch(world, x, y, z, motX, motY, motZ, size);
         }
-        if (name.equals("dread_portal")) {
+        else if (name.equals("dread_portal")) {
             particle = new ParticleDreadPortal(world, x, y, z, motX, motY, motZ, size);
         }
-        if (name.equals("blood")) {
+        else if (name.equals("blood")) {
             particle = new ParticleBlood(world, x, y, z);
         }
-        if (name.equals("if_pixie")) {
+        else if (name.equals("if_pixie")) {
             particle = new ParticlePixieDust(world, x, y, z, (float) motX, (float) motY, (float) motZ);
         }
-        if (name.equals("siren_appearance")) {
+        else if (name.equals("siren_appearance")) {
             particle = new ParticleSirenAppearance(world, x, y, z, (int)motX);
         }
-        if (name.equals("ghost_appearance")) {
+        else if (name.equals("ghost_appearance")) {
             particle = new ParticleGhostAppearance(world, x, y, z, (int)motX);
         }
-        if (name.equals("siren_music")) {
+        else if (name.equals("siren_music")) {
             particle = new ParticleSirenMusic(world, x, y, z, motX, motY, motZ, 1);
         }
-        if (name.equals("serpent_bubble")) {
+        else if (name.equals("serpent_bubble")) {
             particle = new ParticleSerpentBubble(world, x, y, z, motX, motY, motZ, 1);
         }
-        if (name.equals("hydra")) {
+        else if (name.equals("hydra")) {
             particle = new ParticleHydraBreath(world, x, y, z, (float) motX, (float) motY, (float) motZ);
         }
         if (particle != null) {

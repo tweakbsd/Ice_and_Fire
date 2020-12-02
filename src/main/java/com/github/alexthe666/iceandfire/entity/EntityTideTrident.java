@@ -2,6 +2,7 @@ package com.github.alexthe666.iceandfire.entity;
 
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 
+import com.github.alexthe666.iceandfire.item.ItemTideTrident;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -24,6 +25,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityTideTrident extends TridentEntity {
 
+    // NOTE: added by tweakbsd to match damage when used as item.
+    public static float ATTACK_DAMAGE = ItemTideTrident.ATTACK_DAMAGE;
 
     public EntityTideTrident(EntityType type, World worldIn) {
         super(type, worldIn);
@@ -53,19 +56,18 @@ public class EntityTideTrident extends TridentEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-
     @Override
     protected void onEntityHit(EntityRayTraceResult p_213868_1_) {
         Entity entity = p_213868_1_.getEntity();
-        float f = 12.0F;
+        float f = ATTACK_DAMAGE;  // NOTE: tweakbsd added damage to be in sync with corresponding item
         if (entity instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity) entity;
+            LivingEntity livingentity = (LivingEntity)entity;
             f += EnchantmentHelper.getModifierForCreature(this.thrownStack, livingentity.getCreatureAttribute());
         }
 
         Entity entity1 = this.func_234616_v_();
-        DamageSource damagesource = DamageSource.causeTridentDamage(this, entity1 == null ? this : entity1);
-        //this.dealtDamage = true;
+        DamageSource damagesource = DamageSource.causeTridentDamage(this, (Entity)(entity1 == null ? this : entity1));
+        this.dealtDamage = true;  // NOTE: tweakbsd added to accesstransformers.cfg cause was missing and trident had weird behaviour after succeessful hit.
         SoundEvent soundevent = SoundEvents.ITEM_TRIDENT_HIT;
         if (entity.attackEntityFrom(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {
@@ -73,10 +75,10 @@ public class EntityTideTrident extends TridentEntity {
             }
 
             if (entity instanceof LivingEntity) {
-                LivingEntity livingentity1 = (LivingEntity) entity;
+                LivingEntity livingentity1 = (LivingEntity)entity;
                 if (entity1 instanceof LivingEntity) {
                     EnchantmentHelper.applyThornEnchantments(livingentity1, entity1);
-                    EnchantmentHelper.applyArthropodEnchantments((LivingEntity) entity1, livingentity1);
+                    EnchantmentHelper.applyArthropodEnchantments((LivingEntity)entity1, livingentity1);
                 }
 
                 this.arrowHit(livingentity1);
@@ -99,4 +101,5 @@ public class EntityTideTrident extends TridentEntity {
 
         this.playSound(soundevent, f1, 1.0F);
     }
+
 }

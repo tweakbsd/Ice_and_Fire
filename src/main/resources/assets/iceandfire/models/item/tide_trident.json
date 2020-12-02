@@ -1,5 +1,5 @@
 {
-  "parent": "item/handheld",
+  "parent": "item/trident",
   "textures": {
     "layer0": "iceandfire:item/tide_trident"
   },
