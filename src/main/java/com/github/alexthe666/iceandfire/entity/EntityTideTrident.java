@@ -32,11 +32,8 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-<<<<<<< HEAD
 import java.util.Arrays;
-=======
 import java.lang.reflect.Field;
->>>>>>> 5dbe53f0a087daa91872bc580935de3a696ab378
 
 public class EntityTideTrident extends TridentEntity {
 
