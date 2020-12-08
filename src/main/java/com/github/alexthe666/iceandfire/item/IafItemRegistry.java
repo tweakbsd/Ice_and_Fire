@@ -302,8 +302,8 @@ public class IafItemRegistry {
     public static final Item DRAGONSTEEL_ICE_LEGGINGS = new ItemDragonsteelArmor(DRAGONSTEEL_ICE_ARMOR_MATERIAL, 2, EquipmentSlotType.LEGS, "dragonsteel_ice_leggings", "iceandfire.dragonsteel_ice_leggings");
     public static final Item DRAGONSTEEL_ICE_BOOTS = new ItemDragonsteelArmor(DRAGONSTEEL_ICE_ARMOR_MATERIAL, 3, EquipmentSlotType.FEET, "dragonsteel_ice_boots", "iceandfire.dragonsteel_ice_boots");
 
-    public static final Item DRAGONSTEEL_LIGHTNING_INGOT = new ItemGeneric("dragonsteel_lightning_ingot");
-    public static final Item DRAGONSTEEL_LIGHTNING_SWORD = new ItemModSword(DRAGONSTEEL_LIGHTNING_TOOL_MATERIAL, "dragonsteel_lightning_sword");
+    public static final Item DRAGONSTEEL_LIGHTNING_INGOT = new ItemWithResistance("dragonsteel_lightning_ingot").makeImmuneToLightning().makeImmuneToExplosions().makeImmuneToFire();
+    public static final Item DRAGONSTEEL_LIGHTNING_SWORD = new ItemModSwordWithResistance(DRAGONSTEEL_LIGHTNING_TOOL_MATERIAL, "dragonsteel_lightning_sword").makeImmuneToLightning().makeImmuneToExplosions().makeImmuneToFire();
     public static final Item DRAGONSTEEL_LIGHTNING_PICKAXE = new ItemModPickaxe(DRAGONSTEEL_LIGHTNING_TOOL_MATERIAL, "dragonsteel_lightning_pickaxe");
     public static final Item DRAGONSTEEL_LIGHTNING_AXE = new ItemModAxe(DRAGONSTEEL_LIGHTNING_TOOL_MATERIAL, "dragonsteel_lightning_axe");
     public static final Item DRAGONSTEEL_LIGHTNING_SHOVEL = new ItemModShovel(DRAGONSTEEL_LIGHTNING_TOOL_MATERIAL, "dragonsteel_lightning_shovel");

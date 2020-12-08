@@ -1,7 +1,9 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -1118,7 +1120,11 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
                             this.entityDropItem(egg, 1);
                         }
                     }
+
+                    // NOTE: tweakbsd fix for dragons to drop their armor before they become a skeleton
+                    this.dropArmor();
                     this.setDeathStage(this.getDeathStage() + 1);
+
                 } else {
                     this.setDeathStage(this.getDeathStage() + 1);
                     ItemStack drop = getRandomDrop();
@@ -1594,6 +1600,7 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
                     }
                 }
             }
+
         }
         return super.attackEntityFrom(dmg, i);
 
@@ -2076,6 +2083,16 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
 
     public void dropArmor() {
 
+        // NOTE: tweakbsd added, not sure if OFFHAND belongs in dropInventory() ?!?!
+        EquipmentSlotType[] slotTypes = {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,  EquipmentSlotType.FEET, EquipmentSlotType.OFFHAND};
+        for (EquipmentSlotType slotType : slotTypes) {
+            ItemStack itemStackForSlot = this.getItemStackFromSlot(slotType);
+            if(!itemStackForSlot.isEmpty()) {
+
+                this.entityDropItem(itemStackForSlot, 1);
+                this.setItemStackToSlot(slotType, ItemStack.EMPTY);
+            }
+        }
     }
 
     public boolean isChained() {
@@ -2344,5 +2361,22 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
             }
         }
         super.onRemovedFromWorld();
+    }
+
+    // NOTE: tweakbsd fix to not attack tamable entities with same owner as tamed dragon
+    @Override
+    public boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
+
+        // TODO: Maybe check dragon type as well and if not matches still allow the attack, so Ice and Fire Dragon can kill each other still
+        if(this.isTamed() && target instanceof TameableEntity) {
+            TameableEntity tamableTarget = (TameableEntity)target;
+            UUID targetOwner = tamableTarget.getOwnerId();
+            if(targetOwner != null && targetOwner.equals(this.getOwnerId())) {
+
+                System.out.println("Dragon (" + this.getScoreboardName() + ") shouldAttackingEntity() returning false cause: " + target.getScoreboardName() + " it has same owner!!!");
+                return false;
+            }
+        }
+        return super.shouldAttackEntity(target, owner);
     }
 }

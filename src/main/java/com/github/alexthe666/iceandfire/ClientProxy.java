@@ -115,6 +115,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.SpriteRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.world.ClientWorld;
@@ -223,6 +224,9 @@ public class ClientProxy extends CommonProxy {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // NOTE: tweakbsd added renderer for ItemEntityWithResistance
+        RenderingRegistry.registerEntityRenderingHandler(IafEntityRegistry.ITEM_ENTITY_WITH_RESISTANCE, manager -> new ItemRenderer(manager, Minecraft.getInstance().getItemRenderer()));
         RenderingRegistry.registerEntityRenderingHandler(IafEntityRegistry.FIRE_DRAGON, manager -> new RenderDragonBase(manager, FIRE_DRAGON_BASE_MODEL, 0));
         RenderingRegistry.registerEntityRenderingHandler(IafEntityRegistry.ICE_DRAGON, manager -> new RenderDragonBase(manager, ICE_DRAGON_BASE_MODEL, 1));
         RenderingRegistry.registerEntityRenderingHandler(IafEntityRegistry.LIGHTNING_DRAGON, manager -> new RenderLightningDragon(manager, LIGHTNING_DRAGON_BASE_MODEL, 2));
@@ -374,7 +378,8 @@ public class ClientProxy extends CommonProxy {
         else if (name.equals("dragonice")) {
             particle = new ParticleDragonFrost(world, x, y, z, motX, motY, motZ, entityDragonBase, 0);
         }
-        else if (particle != null) {
+
+        if (particle != null) {
             Minecraft.getInstance().particles.addEffect(particle);
         }
     }

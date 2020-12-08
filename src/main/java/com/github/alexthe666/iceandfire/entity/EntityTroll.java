@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import java.util.Optional;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -52,18 +53,11 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 
 public class EntityTroll extends MonsterEntity implements IAnimatedEntity, IVillagerFear, IHumanoid {
@@ -104,11 +98,19 @@ public class EntityTroll extends MonsterEntity implements IAnimatedEntity, IVill
 
     public static boolean canTrollSpawnOn(EntityType<? extends MobEntity> typeIn, IServerWorld worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
         BlockPos blockpos = pos.down();
+
+        //boolean canSpawnInBiomeAtThisBlockPos = worldIn.getBiome(pos).getCategory() != Biome.Category.NETHER;
         return reason == SpawnReason.SPAWNER || worldIn.getBlockState(blockpos).canEntitySpawn(worldIn, blockpos, typeIn)  && isValidLightLevel(worldIn, pos, randomIn) && canSpawnOn(IafEntityRegistry.TROLL, worldIn, reason, pos, randomIn);
     }
 
     public boolean canSpawn(IWorld worldIn, SpawnReason spawnReasonIn) {
         BlockPos pos = this.func_233580_cy_();
+
+        // NOTE: tweakbsd fixed spawning in Warped Forest / Crimson Forest
+        if(worldIn.getBiome(pos).getCategory() == Biome.Category.NETHER) {
+            System.out.println("EntityTroll checking canSpawn failed, BIOME category is nether");
+            return false;
+        }
 
         boolean rngCheck = true;
         if (IafConfig.trollSpawnCheckChance != 0) {
