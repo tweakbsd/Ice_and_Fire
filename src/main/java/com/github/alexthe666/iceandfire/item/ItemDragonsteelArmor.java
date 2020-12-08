@@ -90,14 +90,10 @@ public class ItemDragonsteelArmor extends ArmorItem implements IProtectAgainstDr
             ret = HashMultimap.create(ret);
             int reduction = material.getDamageReductionAmount(slot);
 
-            // NOTE: round to lower number of -> reduction / 175 <- then make it
+            // NOTE: round to lower number of -> reduction / 175 <- then make it a double
+            // Results in 0.3 - 0.7 per slot
             double knockbackResistance = Math.floor( ((double)reduction / 175.0) * 100) / 100.0D;
-            String name = "Dragonsteel modifier " + this.slot;
-
-            System.out.println("ItemDragonsteelArmor.getAttributeModifier() " + name + " Knockback Resistance added: " + knockbackResistance);
-
-
-
+            String name = "Dragonsteel Knockback modifier " + this.slot;
             // NOTE: tweakbsd field_233820_c_ aka KNOCKBACK_RESISTANCE
             ret.put(Attributes.field_233820_c_,
                     new AttributeModifier(uuid, name, knockbackResistance, AttributeModifier.Operation.ADDITION));

@@ -344,11 +344,9 @@ public class EntityPixie extends TameableEntity {
 
             // NOTE: This code was taken from EntityHippogryph basically same idea
             if (this.isSitting() && this.getCommand() != 1) {
-
                 this.setSitting(false);
             }
             if (!this.isSitting() && this.getCommand() == 1) {
-
                 this.setSitting(true);
             }
             if (this.isSitting()) {

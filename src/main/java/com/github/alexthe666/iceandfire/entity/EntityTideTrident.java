@@ -27,10 +27,16 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+<<<<<<< HEAD
 import java.util.Arrays;
+=======
+import java.lang.reflect.Field;
+>>>>>>> 5dbe53f0a087daa91872bc580935de3a696ab378
 
 public class EntityTideTrident extends TridentEntity {
 
@@ -165,7 +171,8 @@ public class EntityTideTrident extends TridentEntity {
 
                 if (!entity.isAlive() && this.hitEntities != null) {
 
-                    System.out.println("PIERCED adding livingentity to hitEntities list...");
+                    System.out.println("PIERCED adding livingentity to hitEntities list... size before " + this.hitEntities.size());
+
                     this.hitEntities.add(livingentity);
                 }
 
@@ -225,8 +232,26 @@ public class EntityTideTrident extends TridentEntity {
         }
 
         Entity entity1 = this.func_234616_v_();
+
         DamageSource damagesource = DamageSource.causeTridentDamage(this, (Entity)(entity1 == null ? this : entity1));
         this.dealtDamage = true;  // NOTE: tweakbsd added to accesstransformers.cfg cause was missing and trident had weird behaviour after succeessful hit.
+
+        /*
+        NOTE: Same as above line without accesstransformer.cfg changes
+        try {
+            Field dealtDamageField = ObfuscationReflectionHelper.findField(EntityTideTrident.class, "field_226571_aq_");
+            Field modifier = Field.class.getDeclaredField("modifiers");
+            modifier.setAccessible(true);
+            dealtDamageField.set(this, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        */
+
+
+        DamageSource damagesource = DamageSource.causeTridentDamage(this, entity1 == null ? this : entity1);
+
+
         SoundEvent soundevent = SoundEvents.ITEM_TRIDENT_HIT;
         if (entity.attackEntityFrom(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {

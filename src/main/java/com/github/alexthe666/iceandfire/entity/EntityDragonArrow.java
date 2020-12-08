@@ -37,7 +37,7 @@ public class EntityDragonArrow extends AbstractArrowEntity {
 
     public EntityDragonArrow(EntityType typeIn, LivingEntity shooter, World worldIn) {
         super(typeIn, shooter, worldIn);
-        this.setDamage(10.0F);  // fix
+        this.setDamage(ATTACK_DAMAGE);
     }
 
     @Override

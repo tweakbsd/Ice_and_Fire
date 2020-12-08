@@ -45,6 +45,10 @@ public class PlayerRenderEvents {
 
     public UUID tweakbsd = UUID.fromString("7794afc9-f3d8-4b90-8a27-e8548f1d0f84");
 
+    /*
+
+    */
+
     @SubscribeEvent
     public void playerRender(RenderPlayerEvent.Pre event) {
 
@@ -53,15 +57,13 @@ public class PlayerRenderEvents {
                 NetworkPlayerInfo info = ((AbstractClientPlayerEntity)event.getEntityLiving()).getPlayerInfo();
             if (info != null) {
                 Map<MinecraftProfileTexture.Type, ResourceLocation> textureMap = info.playerTextures;
-
                 if (textureMap != null) {
-
                     if(event.getEntityLiving().getUniqueID().equals(tweakbsd)) {
 
                         textureMap.put(MinecraftProfileTexture.Type.CAPE, redTex);
                         textureMap.put(MinecraftProfileTexture.Type.ELYTRA, redElytraTex);
 
-                    } /*else if (hasBetaCape(event.getEntityLiving().getUniqueID())) {
+                    } else if (hasBetaCape(event.getEntityLiving().getUniqueID())) {
 
                         textureMap.put(MinecraftProfileTexture.Type.CAPE, betaTex);
                         textureMap.put(MinecraftProfileTexture.Type.ELYTRA, betaElytraTex);
@@ -75,8 +77,6 @@ public class PlayerRenderEvents {
                         textureMap.put(MinecraftProfileTexture.Type.CAPE, blueTex);
                         textureMap.put(MinecraftProfileTexture.Type.ELYTRA, blueElytraTex);
                     }
-                    */
-
                 }
             }
         }

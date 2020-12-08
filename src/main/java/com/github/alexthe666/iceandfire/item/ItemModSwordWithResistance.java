@@ -81,7 +81,7 @@ public class ItemModSwordWithResistance extends ItemModSword {
     }
 
     public boolean hasCustomEntity(ItemStack stack) {
-        if(stack != null && !stack.isEmpty() && (stack.getItem() instanceof ItemWithResistance)) {
+        if(stack != null && !stack.isEmpty() && (stack.getItem() instanceof ItemModSword)) {
             System.out.println("IItemWithResistance.hasCustomEntity() returning true");
             return true;
         }
@@ -93,7 +93,7 @@ public class ItemModSwordWithResistance extends ItemModSword {
     {
         if (location.getClass().equals(ItemEntity.class)) {
 
-            ItemEntityWithResistance newEntity = new ItemEntityWithResistance( (ItemEntity)location);
+            ItemEntityWithResistance newEntity = new ItemEntityWithResistance( (ItemEntity) location);
             newEntity.setIsImmuneToExplosions(this.isImmuneToExplosions);
             newEntity.setIsImmuneToFire(this.isImmuneToFire);
             newEntity.setIsImmuneToLightning(this.isImmuneToLightning);
