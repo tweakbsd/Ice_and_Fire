@@ -6,19 +6,7 @@ import com.github.alexthe666.citadel.animation.Animation;
 import com.github.alexthe666.citadel.server.entity.EntityPropertiesHandler;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIAttackPlayers;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIDefendHive;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIForage;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIForageForItems;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAILeaveHive;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAILookAtTradePlayer;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIMoveThroughHive;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIPickupBabies;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIReEnterHive;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIStoreBabies;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIStoreItems;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAITradePlayer;
-import com.github.alexthe666.iceandfire.entity.ai.MyrmexAIWander;
+import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.entity.props.StoneEntityProperties;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
 import com.github.alexthe666.iceandfire.entity.util.MyrmexTrades;
@@ -78,6 +66,10 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
         return 3;
     }
 
+    public boolean isSmallerThanBlock(){
+        return true;
+    }
+
     public void livingTick() {
         super.livingTick();
         if (this.getAnimation() == ANIMATION_BITE && this.getAttackTarget() != null && this.getAnimationTick() == 6) {
@@ -127,7 +119,7 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(0, new MyrmexAITradePlayer(this));
         this.goalSelector.addGoal(0, new MyrmexAILookAtTradePlayer(this));
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(1, new MyrmexAIAttackMelee(this, 1.0D, true));
         this.goalSelector.addGoal(2, new MyrmexAIStoreBabies(this, 1.0D));
         this.goalSelector.addGoal(3, new MyrmexAIStoreItems(this, 1.0D));
         this.goalSelector.addGoal(4, new MyrmexAIReEnterHive(this, 1.0D));
@@ -173,7 +165,7 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
                 //ATTACK
                 .func_233815_a_(Attributes.field_233823_f_, IafConfig.myrmexBaseAttackStrength)
                 //FOLLOW RANGE
-                .func_233815_a_(Attributes.field_233819_b_, 32.0D)
+                .func_233815_a_(Attributes.field_233819_b_, 32D)
                 //ARMOR
                 .func_233815_a_(Attributes.field_233826_i_, 4D);
     }
@@ -197,7 +189,7 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
     }
 
     public boolean shouldMoveThroughHive() {
-        return !holdingSomething();
+        return !shouldLeaveHive() && !holdingSomething();
     }
 
     @Override

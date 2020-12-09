@@ -1,20 +1,17 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
-import java.util.EnumSet;
-
-import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
-
+import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.DragonAdvancedPathNavigate;
-import com.github.alexthe666.iceandfire.pathfinding.raycoms.PathFindingStatus;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.PathResult;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.pathfinding.Path;
 import net.minecraft.util.Hand;
 
-public class DragonAIAttackMelee extends Goal {
-    protected EntityDragonBase dragon;
+import java.util.EnumSet;
+
+public class MyrmexAIAttackMelee extends Goal {
+    protected EntityMyrmexBase myrmex;
     private int attackTick;
     private double speedTowardsTarget;
     private boolean longMemory;
@@ -27,8 +24,8 @@ public class DragonAIAttackMelee extends Goal {
     private PathResult attackPath;
     private DragonAdvancedPathNavigate pathNavigate;
 
-    public DragonAIAttackMelee(EntityDragonBase dragon, double speedIn, boolean useLongMemory) {
-        this.dragon = dragon;
+    public MyrmexAIAttackMelee(EntityMyrmexBase dragon, double speedIn, boolean useLongMemory) {
+        this.myrmex = dragon;
         this.speedTowardsTarget = speedIn;
         this.longMemory = useLongMemory;
         this.setMutexFlags(EnumSet.of(Flag.MOVE));
@@ -36,9 +33,9 @@ public class DragonAIAttackMelee extends Goal {
 
     @Override
     public boolean shouldExecute() {
-        LivingEntity LivingEntity = this.dragon.getAttackTarget();
-        if (this.dragon.getNavigator() instanceof DragonAdvancedPathNavigate) {
-            pathNavigate = (DragonAdvancedPathNavigate) this.dragon.getNavigator();
+        LivingEntity LivingEntity = this.myrmex.getAttackTarget();
+        if (this.myrmex.getNavigator() instanceof DragonAdvancedPathNavigate) {
+            pathNavigate = (DragonAdvancedPathNavigate) this.myrmex.getNavigator();
         } else {
             return false;
         }
@@ -46,27 +43,27 @@ public class DragonAIAttackMelee extends Goal {
             return false;
         } else if (!LivingEntity.isAlive()) {
             return false;
-        } else if (!dragon.canMove() || dragon.isHovering() || dragon.isFlying()) {
+        } else if (!myrmex.canMove()) {
             return false;
         } else {
-            attackPath = ((DragonAdvancedPathNavigate) this.dragon.getNavigator()).moveToLivingEntity(LivingEntity, speedTowardsTarget);
+            attackPath = ((DragonAdvancedPathNavigate) this.myrmex.getNavigator()).moveToLivingEntity(LivingEntity, speedTowardsTarget);
             if (this.attackPath != null) {
                 return true;
             } else {
-                return this.getAttackReachSqr(LivingEntity) >= this.dragon.getDistanceSq(LivingEntity.getPosX(), LivingEntity.getBoundingBox().minY, LivingEntity.getPosZ());
+                return this.getAttackReachSqr(LivingEntity) >= this.myrmex.getDistanceSq(LivingEntity.getPosX(), LivingEntity.getBoundingBox().minY, LivingEntity.getPosZ());
             }
         }
     }
 
     @Override
     public boolean shouldContinueExecuting() {
-        LivingEntity LivingEntity = this.dragon.getAttackTarget();
-        if (LivingEntity != null && !LivingEntity.isAlive() || !(this.dragon.getNavigator() instanceof DragonAdvancedPathNavigate)) {
+        LivingEntity LivingEntity = this.myrmex.getAttackTarget();
+        if (LivingEntity != null && !LivingEntity.isAlive() || !(this.myrmex.getNavigator() instanceof DragonAdvancedPathNavigate)) {
             this.resetTask();
             return false;
         }
 
-        return LivingEntity != null && (LivingEntity.isAlive() && (!this.longMemory ? (dragon.isFlying() || dragon.isHovering()) : (this.dragon.isWithinHomeDistanceFromPosition(LivingEntity.func_233580_cy_()) && (!(LivingEntity instanceof PlayerEntity) || !LivingEntity.isSpectator() && !((PlayerEntity) LivingEntity).isCreative()))));
+        return LivingEntity != null && (LivingEntity.isAlive() && (!(LivingEntity instanceof PlayerEntity) || !LivingEntity.isSpectator() && !((PlayerEntity) LivingEntity).isCreative()));
     }
 
     @Override
@@ -76,37 +73,30 @@ public class DragonAIAttackMelee extends Goal {
 
     @Override
     public void resetTask() {
-        LivingEntity LivingEntity = this.dragon.getAttackTarget();
+        LivingEntity LivingEntity = this.myrmex.getAttackTarget();
         if (LivingEntity instanceof PlayerEntity && (LivingEntity.isSpectator() || ((PlayerEntity) LivingEntity).isCreative())) {
-            this.dragon.setAttackTarget(null);
+            this.myrmex.setAttackTarget(null);
         }
     }
 
     @Override
     public void tick() {
-        LivingEntity entity = this.dragon.getAttackTarget();
-
-        ((DragonAdvancedPathNavigate) this.dragon.getNavigator()).moveToLivingEntity(entity, speedTowardsTarget);
+        LivingEntity entity = this.myrmex.getAttackTarget();
+        ((DragonAdvancedPathNavigate) this.myrmex.getNavigator()).moveToLivingEntity(entity, speedTowardsTarget);
         if (entity != null) {
-            if (!dragon.isPassenger(entity)) {
-            }
-            if (dragon.getAnimation() == EntityDragonBase.ANIMATION_SHAKEPREY) {
-                this.resetTask();
-                return;
-            }
-            double d0 = this.dragon.getDistanceSq(entity.getPosX(), entity.getBoundingBox().minY, entity.getPosZ());
+            double d0 = this.myrmex.getDistanceSq(entity.getPosX(), entity.getBoundingBox().minY, entity.getPosZ());
             double d1 = this.getAttackReachSqr(entity);
             --this.delayCounter;
-            if ((this.longMemory || this.dragon.getEntitySenses().canSee(entity)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || entity.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.dragon.getRNG().nextFloat() < 0.05F)) {
+            if ((this.longMemory || this.myrmex.getEntitySenses().canSee(entity)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || entity.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.myrmex.getRNG().nextFloat() < 0.05F)) {
                 this.targetX = entity.getPosX();
                 this.targetY = entity.getBoundingBox().minY;
                 this.targetZ = entity.getPosZ();
-                this.delayCounter = 4 + this.dragon.getRNG().nextInt(7);
+                this.delayCounter = 4 + this.myrmex.getRNG().nextInt(7);
 
                 if (this.canPenalize) {
                     this.delayCounter += failedPathFindingPenalty;
-                    if (this.dragon.getNavigator().getPath() != null) {
-                        net.minecraft.pathfinding.PathPoint finalPathPoint = this.dragon.getNavigator().getPath().getFinalPathPoint();
+                    if (this.myrmex.getNavigator().getPath() != null) {
+                        net.minecraft.pathfinding.PathPoint finalPathPoint = this.myrmex.getNavigator().getPath().getFinalPathPoint();
                         if (finalPathPoint != null && entity.getDistanceSq(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) < 1)
                             failedPathFindingPenalty = 0;
                         else
@@ -121,7 +111,7 @@ public class DragonAIAttackMelee extends Goal {
                 } else if (d0 > 256.0D) {
                     this.delayCounter += 5;
                 }
-                if (this.dragon.canMove()) {
+                if (this.myrmex.canMove()) {
                     this.delayCounter += 15;
                 }
             }
@@ -130,13 +120,13 @@ public class DragonAIAttackMelee extends Goal {
 
             if (d0 <= d1 && this.attackTick <= 0) {
                 this.attackTick = 20;
-                this.dragon.swingArm(Hand.MAIN_HAND);
-                this.dragon.attackEntityAsMob(entity);
+                this.myrmex.swingArm(Hand.MAIN_HAND);
+                this.myrmex.attackEntityAsMob(entity);
             }
         }
     }
 
     protected double getAttackReachSqr(LivingEntity attackTarget) {
-        return this.dragon.getWidth() * 2.0F * this.dragon.getWidth() * 2.0F + attackTarget.getWidth();
+        return this.myrmex.getWidth() * 2.0F * this.myrmex.getWidth() * 2.0F + attackTarget.getWidth();
     }
 }
