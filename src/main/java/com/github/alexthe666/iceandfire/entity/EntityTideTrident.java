@@ -245,10 +245,6 @@ public class EntityTideTrident extends TridentEntity {
         }
         */
 
-
-        DamageSource damagesource = DamageSource.causeTridentDamage(this, entity1 == null ? this : entity1);
-
-
         SoundEvent soundevent = SoundEvents.ITEM_TRIDENT_HIT;
         if (entity.attackEntityFrom(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {

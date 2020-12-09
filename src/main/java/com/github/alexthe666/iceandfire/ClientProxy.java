@@ -339,7 +339,7 @@ public class ClientProxy extends CommonProxy {
                 return 0.0F;
             } else {
                 ItemDragonBow item = ((ItemDragonBow) stack.getItem());
-                return entity.getActiveItemStack() != stack ? 0.0F : (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F;
+                return entity.getActiveItemStack() != stack ? 0.0F : (stack.getUseDuration() - entity.getItemInUseCount()) * item.chargeVelocityMultiplier() / 20.0F;
             }
         };
         ItemModelsProperties.func_239418_a_(IafItemRegistry.DRAGON_BOW.asItem(), new ResourceLocation("pulling"), pulling);
@@ -356,22 +356,6 @@ public class ClientProxy extends CommonProxy {
         ItemModelsProperties.func_239418_a_(IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING, new ResourceLocation("has_dragon"), (stack, p_239428_1_, p_239428_2_) -> {
             return ItemSummoningCrystal.hasDragon(stack) ? 1.0F : 0.0F;
         });
-
-
-        // NOTE: tweakbsd fix for Dragonbone Bow not animating at all
-        IItemPropertyGetter pulling = ItemModelsProperties.func_239417_a_(Items.BOW, new ResourceLocation("pulling"));
-        IItemPropertyGetter pull = (stack, worldIn, entity) -> {
-            if (entity == null) {
-                return 0.0F;
-            } else {
-                ItemDragonBow item = ((ItemDragonBow) stack.getItem());
-                return entity.getActiveItemStack() != stack
-                        ? 0.0F
-                        : (stack.getUseDuration() - entity.getItemInUseCount()) * item.chargeVelocityMultiplier() / 20.0F;
-            }
-        };
-        ItemModelsProperties.func_239418_a_(IafItemRegistry.DRAGON_BOW.asItem(), new ResourceLocation("pulling"), pulling);
-        ItemModelsProperties.func_239418_a_(IafItemRegistry.DRAGON_BOW.asItem(), new ResourceLocation("pull"), pull);
     }
 
 

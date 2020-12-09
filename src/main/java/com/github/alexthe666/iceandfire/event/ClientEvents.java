@@ -69,6 +69,7 @@ public class ClientEvents {
     private static final ResourceLocation CHAIN_TEXTURE = new ResourceLocation("iceandfire:textures/models/misc/chain_link.png");
     private Random rand = new Random();
 
+    /*
     @SubscribeEvent
     public void renderWorldLastEvent(RenderWorldLastEvent event) {
         IceAndFire.DEBUG = true;
@@ -76,6 +77,7 @@ public class ClientEvents {
             Pathfinding.debugDraw(event.getPartialTicks(), event.getMatrixStack());
         }
     }
+     */
 
     public static void initializeStoneLayer() {
         for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getRenderManager().renderers.entrySet()) {

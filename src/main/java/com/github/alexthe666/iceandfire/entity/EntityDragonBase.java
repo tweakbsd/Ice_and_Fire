@@ -53,6 +53,7 @@ import com.github.alexthe666.iceandfire.message.MessageDragonControl;
 import com.github.alexthe666.iceandfire.message.MessageDragonSetBurnBlock;
 import com.github.alexthe666.iceandfire.message.MessageStartRidingMob;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
+import com.github.alexthe666.iceandfire.pathfinding.PathNavigateDragon;
 import com.github.alexthe666.iceandfire.pathfinding.PathNavigateFlyingCreature;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.DragonAdvancedPathNavigate;
 import com.github.alexthe666.iceandfire.world.DragonPosWorldData;
@@ -482,10 +483,14 @@ public abstract class EntityDragonBase extends TameableEntity implements ISyncMo
     protected abstract void breathFireAtPos(BlockPos burningTarget);
 
     protected PathNavigator createNavigator(World worldIn) {
-        DragonAdvancedPathNavigate newNavigator = new DragonAdvancedPathNavigate(this, world);
+
+        // tweakbd fix, tamed dragon use new Navigator, untamed ones the old
+        PathNavigator newNavigator = this.isTamed() ? new DragonAdvancedPathNavigate(this, world) : new PathNavigateDragon(this, world);
+
         this.navigator = newNavigator;
         newNavigator.setCanSwim(true);
         newNavigator.getNodeProcessor().setCanOpenDoors(true);
+
         return newNavigator;
     }
 

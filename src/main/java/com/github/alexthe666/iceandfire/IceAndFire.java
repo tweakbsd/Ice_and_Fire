@@ -63,7 +63,7 @@ public class IceAndFire {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "iceandfire";
     public static final SimpleChannel NETWORK_WRAPPER;
-    public static final boolean DEBUG = false;
+    public static boolean DEBUG = false;
     public static final String VERSION = "2.1.3-1.16.3";
     public static final String TWEAKBSD_VERSION = "rev1"; // NOTE: My own custom version
     private static final String PROTOCOL_VERSION = Integer.toString(1);
