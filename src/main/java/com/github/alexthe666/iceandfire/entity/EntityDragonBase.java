@@ -229,12 +229,6 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     protected int fireTicks;
     protected int blockBreakCounter;
     private int prevFlightCycle;
-    private boolean isSleeping;
-    private boolean isSitting;
-    private boolean isHovering;
-    private boolean isFlying;
-    private boolean isBreathingFire;
-    private boolean isTackling;
     private boolean isModelDead;
     private int animationTick;
     private Animation currentAnimation;
@@ -502,6 +496,8 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
             this.moveController = new IafDragonFlightManager.GroundMoveHelper(this);
             this.navigator = createNavigator(world);
             this.navigatorType = 0;
+            this.setFlying(false);
+            this.setHovering(false);
         } else if (navigatorType == 1) {
             this.moveController = new IafDragonFlightManager.FlightMoveHelper(this);
             this.navigator = new PathNavigateFlyingCreature(this, world);
@@ -937,31 +933,20 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     }
 
     public boolean isHovering() {
-        if (world.isRemote) {
-            return this.isHovering = this.dataManager.get(HOVERING).booleanValue();
-        }
-        return isHovering;
+        return this.dataManager.get(HOVERING).booleanValue();
     }
 
     public void setHovering(boolean hovering) {
+        System.out.println( Thread.currentThread().getStackTrace());
         this.dataManager.set(HOVERING, hovering);
-        if (!world.isRemote) {
-            this.isHovering = hovering;
-        }
     }
 
     public boolean isFlying() {
-        if (world.isRemote) {
-            return this.isFlying = this.dataManager.get(FLYING).booleanValue();
-        }
-        return isFlying;
+        return this.dataManager.get(FLYING).booleanValue();
     }
 
     public void setFlying(boolean flying) {
         this.dataManager.set(FLYING, flying);
-        if (!world.isRemote) {
-            this.isFlying = flying;
-        }
     }
 
     public boolean useFlyingPathFinder() {
@@ -977,19 +962,11 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     }
 
     public boolean isSleeping() {
-        if (world.isRemote) {
-            boolean isSleeping = this.dataManager.get(SLEEPING).booleanValue();
-            this.isSleeping = isSleeping;
-            return isSleeping;
-        }
-        return isSleeping;
+        return this.dataManager.get(SLEEPING).booleanValue();
     }
 
     public void setSleeping(boolean sleeping) {
         this.dataManager.set(SLEEPING, sleeping);
-        if (!world.isRemote) {
-            this.isSleeping = sleeping;
-        }
     }
 
     public boolean isBlinking() {
@@ -997,19 +974,11 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     }
 
     public boolean isBreathingFire() {
-        if (world.isRemote) {
-            boolean breathing = this.dataManager.get(FIREBREATHING).booleanValue();
-            this.isBreathingFire = breathing;
-            return breathing;
-        }
-        return isBreathingFire;
+        return this.dataManager.get(FIREBREATHING).booleanValue();
     }
 
     public void setBreathingFire(boolean breathing) {
         this.dataManager.set(FIREBREATHING, breathing);
-        if (!world.isRemote) {
-            this.isBreathingFire = breathing;
-        }
     }
 
     protected boolean canFitPassenger(Entity passenger) {
@@ -1017,18 +986,10 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     }
 
     public boolean isSitting() {
-        if (world.isRemote) {
-            boolean isSitting = (this.dataManager.get(TAMED).byteValue() & 1) != 0;
-            this.isSitting = isSitting;
-            return isSitting;
-        }
-        return isSitting;
+        return (this.dataManager.get(TAMED).byteValue() & 1) != 0;
     }
 
     public void setSitting(boolean sitting) {
-        if (!world.isRemote) {
-            this.isSitting = sitting;
-        }
         byte b0 = this.dataManager.get(TAMED).byteValue();
         if (sitting) {
             this.dataManager.set(TAMED, Byte.valueOf((byte) (b0 | 1)));
@@ -1402,22 +1363,23 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
         return this.getPosY() > IafConfig.maxDragonFlight;
     }
 
-    private int calculateDownY(){
-        if(this.getNavigator().getPath() != null){
+    private int calculateDownY() {
+        if (this.getNavigator().getPath() != null) {
             Path path = this.getNavigator().getPath();
             Vector3d p = path.getVectorFromIndex(this, Math.min(path.getCurrentPathLength() - 1, path.getCurrentPathIndex() + 1));
-            if(p.y < this.getPosY() - 1){
+            if (p.y < this.getPosY() - 1) {
                 return -1;
             }
         }
         return 1;
     }
+
     public void breakBlock() {
         if (this.blockBreakCounter > 0 || IafConfig.dragonBreakBlockCooldown == 0) {
             --this.blockBreakCounter;
             int bounds = 1;//(int)Math.ceil(this.getRenderSize() * 0.1);
-            int yMinus = calculateDownY();
             int flightModifier = isFlying() && this.getAttackTarget() != null ? -1 : 1;
+            int yMinus = calculateDownY();
             if (!this.isIceInWater() && (this.blockBreakCounter == 0 || IafConfig.dragonBreakBlockCooldown == 0) && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.world, this)) {
                 if (IafConfig.dragonGriefing != 2 && (!this.isTamed() || IafConfig.tamedDragonGriefing)) {
                     float hardness = IafConfig.dragonGriefing == 1 || this.getDragonStage() <= 3 ? 2.0F : 5.0F;
@@ -1450,16 +1412,19 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
         }
     }
 
-    protected boolean isBreakable(BlockPos pos, BlockState state, float hardness){
+    protected boolean isBreakable(BlockPos pos, BlockState state, float hardness) {
         return state.getMaterial().blocksMovement() && !state.isAir() && state.getFluidState().isEmpty() && !state.getShape(world, pos).isEmpty() && state.getBlockHardness(world, pos) >= 0F && state.getBlockHardness(world, pos) <= hardness && DragonUtils.canDragonBreak(state.getBlock()) && this.canDestroyBlock(pos);
     }
 
-    public boolean isBlockPassable(BlockState state, BlockPos pos, BlockPos entityPos){
-        if(IafConfig.dragonGriefing != 2 && (!this.isTamed() || IafConfig.tamedDragonGriefing) && !isModelDead() && this.getDragonStage() >= 3){
-            return isBreakable(pos, state, IafConfig.dragonGriefing == 1 || this.getDragonStage() <= 3 ? 2.0F : 5.0F);
+    public boolean isBlockPassable(BlockState state, BlockPos pos, BlockPos entityPos) {
+        if (!isModelDead() && this.getDragonStage() >= 3) {
+            if (IafConfig.dragonGriefing != 2 && (!this.isTamed() || IafConfig.tamedDragonGriefing) && pos.getY() >= this.getPosY()) {
+                return isBreakable(pos, state, IafConfig.dragonGriefing == 1 || this.getDragonStage() <= 3 ? 2.0F : 5.0F);
+            }
         }
         return false;
     }
+
     protected boolean isIceInWater() {
         return false;
     }
@@ -1503,7 +1468,7 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
 
     public boolean doesWantToLand() {
         StoneEntityProperties properties = EntityPropertiesHandler.INSTANCE.getProperties(this, StoneEntityProperties.class);
-        return this.flyTicks > 6000 || isGoingDown() || flyTicks > 40 && this.flyProgress == 0 || properties != null && properties.isStone() || this.isChained() && flyTicks > 100 || this.airAttack == IafDragonAttacks.Air.TACKLE && this.getAttackTarget() != null;
+        return this.flyTicks > 6000 || isGoingDown() || flyTicks > 40 && this.flyProgress == 0 || properties != null && properties.isStone() || this.isChained() && flyTicks > 100;
     }
 
     public abstract String getVariantName(int variant);
@@ -1660,6 +1625,9 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
         this.prevDragonPitch = getDragonPitch();
         if (world.isRemote) {
             this.updateClientControls();
+        }
+        if (!world.isRemote) {
+            logic.debug();
         }
 
         world.getProfiler().startSection("dragonLogic");
@@ -1886,19 +1854,11 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     }
 
     public boolean isTackling() {
-        if (world.isRemote) {
-            boolean tackling = this.dataManager.get(TACKLE).booleanValue();
-            this.isTackling = tackling;
-            return tackling;
-        }
-        return isTackling;
+        return this.dataManager.get(TACKLE).booleanValue();
     }
 
     public void setTackling(boolean tackling) {
         this.dataManager.set(TACKLE, tackling);
-        if (!world.isRemote) {
-            this.isTackling = tackling;
-        }
     }
 
     public boolean isAgingDisabled() {
@@ -2278,7 +2238,7 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     }
 
     public boolean isAllowedToTriggerFlight() {
-        return this.hasFlightClearance() && !this.isSitting() && this.getPassengers().isEmpty() && !this.isChild() && !this.isSleeping() && this.canMove() && this.onGround;
+        return (this.hasFlightClearance() && this.onGround || this.isInWater()) && !this.isSitting() && this.getPassengers().isEmpty() && !this.isChild() && !this.isSleeping() && this.canMove();
     }
 
     public BlockPos getEscortPosition() {
@@ -2393,6 +2353,7 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
         super.onRemovedFromWorld();
     }
 
+
     // NOTE: tweakbsd fix to not attack tamable entities with same owner as tamed dragon
     @Override
     public boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
@@ -2408,5 +2369,8 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
             }
         }
         return super.shouldAttackEntity(target, owner);
+
+    public int maxSearchNodes() {
+        return 50;
     }
 }
