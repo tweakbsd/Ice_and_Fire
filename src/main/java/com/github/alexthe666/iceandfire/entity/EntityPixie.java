@@ -66,10 +66,6 @@ public class EntityPixie extends TameableEntity {
 
     public static final float[][] PARTICLE_RGB = new float[][]{new float[]{1F, 0.752F, 0.792F}, new float[]{0.831F, 0.662F, 1F}, new float[]{0.513F, 0.843F, 1F}, new float[]{0.654F, 0.909F, 0.615F}, new float[]{0.996F, 0.788F, 0.407F}};
     private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPixie.class, DataSerializers.VARINT);
-<<<<<<< HEAD
-    private static final DataParameter<Boolean> SITTING = EntityDataManager.createKey(EntityPixie.class, DataSerializers.BOOLEAN);
-=======
->>>>>>> 1.16.3-pixiefix
     private static final DataParameter<Integer> COMMAND = EntityDataManager.createKey(EntityHippogryph.class, DataSerializers.VARINT);
 
     public static final int STEAL_COOLDOWN = 3000;
@@ -205,10 +201,6 @@ public class EntityPixie extends TameableEntity {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(COLOR, Integer.valueOf(0));
-<<<<<<< HEAD
-        this.dataManager.register(SITTING, Boolean.valueOf(false));
-=======
->>>>>>> 1.16.3-pixiefix
         this.dataManager.register(COMMAND, Integer.valueOf(0));
     }
 
@@ -225,29 +217,14 @@ public class EntityPixie extends TameableEntity {
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         if (this.isOwner(player)) {
 
-<<<<<<< HEAD
-            // NOTE: Addition by tweakbsd, tamed Pixie drop their item using a stick
-            /*if (this.isTamed() && player.getHeldItem(hand).getItem() == Items.STICK) {
-                this.entityDropItem(this.getHeldItem(Hand.MAIN_HAND), 0);
-                this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
-                return ActionResultType.SUCCESS;
-            }*/
-
-=======
->>>>>>> 1.16.3-pixiefix
             if (player.getHeldItem(hand).getItem() == Items.SUGAR && this.getHealth() < this.getMaxHealth()) {
                 this.heal(5);
                 player.getHeldItem(hand).shrink(1);
                 this.playSound(IafSoundRegistry.PIXIE_TAUNT, 1F, 1F);
                 return ActionResultType.SUCCESS;
             } else {
-
-<<<<<<< HEAD
-
-                // NOTE: Make sit via a check in livingTick()
-=======
+                
                 // make pixie sit via a check in livingTick() like Hippogryphs work
->>>>>>> 1.16.3-pixiefix
                 this.setCommand(this.getCommand() + 1);
                 if (this.getCommand() > 1) {
                     this.setCommand(0);
