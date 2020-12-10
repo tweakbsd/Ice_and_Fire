@@ -223,7 +223,7 @@ public class EntityPixie extends TameableEntity {
                 this.playSound(IafSoundRegistry.PIXIE_TAUNT, 1F, 1F);
                 return ActionResultType.SUCCESS;
             } else {
-                
+
                 // make pixie sit via a check in livingTick() like Hippogryphs work
                 this.setCommand(this.getCommand() + 1);
                 if (this.getCommand() > 1) {
