@@ -2359,16 +2359,17 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     public boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
 
         // TODO: Maybe check dragon type as well and if not matches still allow the attack, so Ice and Fire Dragon can kill each other still
-        if(this.isTamed() && target instanceof TameableEntity) {
-            TameableEntity tamableTarget = (TameableEntity)target;
+        if (this.isTamed() && target instanceof TameableEntity) {
+            TameableEntity tamableTarget = (TameableEntity) target;
             UUID targetOwner = tamableTarget.getOwnerId();
-            if(targetOwner != null && targetOwner.equals(this.getOwnerId())) {
+            if (targetOwner != null && targetOwner.equals(this.getOwnerId())) {
 
-                System.out.println("Dragon (" + this.getScoreboardName() + ") shouldAttackingEntity() returning false cause: " + target.getScoreboardName() + " it has same owner!!!");
+                //System.out.println("Dragon (" + this.getScoreboardName() + ") shouldAttackingEntity() returning false cause: " + target.getScoreboardName() + " it has same owner!!!");
                 return false;
             }
         }
         return super.shouldAttackEntity(target, owner);
+    }
 
     public int maxSearchNodes() {
         return 50;
