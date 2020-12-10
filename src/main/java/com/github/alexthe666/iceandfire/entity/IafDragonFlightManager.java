@@ -59,6 +59,7 @@ public class IafDragonFlightManager {
             if (dragon.airAttack == IafDragonAttacks.Air.TACKLE) {
                 target = new Vector3d(entity.getPosX(), entity.getPosY() + entity.getHeight(), entity.getPosZ());
             }
+
             if (dragon.airAttack == IafDragonAttacks.Air.HOVER_BLAST) {
                 float distY = 5 + dragon.getDragonStage() * 2;
                 int randomDist = 20;
@@ -87,7 +88,7 @@ public class IafDragonFlightManager {
             if (dragon.getCommand() == 2 && dragon.isFlying()) {
                 viewBlock = DragonUtils.getBlockInViewEscort(dragon);
             }
-            if(viewBlock == null){
+            if(viewBlock == null) {
                 viewBlock = DragonUtils.getBlockInView(dragon);
             }
             if (viewBlock != null) {
@@ -100,7 +101,6 @@ public class IafDragonFlightManager {
             }
             if (target.y >= dragon.getPosY() && !dragon.isModelDead()) {
                 dragon.setMotion(dragon.getMotion().add(0, 0.1D, 0));
-
             }
         }
 
