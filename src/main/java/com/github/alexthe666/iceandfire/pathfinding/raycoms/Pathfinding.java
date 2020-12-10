@@ -263,7 +263,7 @@ public final class Pathfinding {
     }
 
     /**
-     * Minecolonies specific thread factory.
+     * Ice and Fire specific thread factory.
      */
     public static class IafThreadFactory implements ThreadFactory {
         /**
