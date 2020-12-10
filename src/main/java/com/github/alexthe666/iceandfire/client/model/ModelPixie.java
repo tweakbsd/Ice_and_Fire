@@ -139,16 +139,7 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
             this.Left_Arm.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.0F * f1 * 0.5F / 1;
         }
 
-
-
-
-        // NOTE: It was troublesome rendering upon world joining
-        //System.out.println("ModelPixie sittingData " + sittingInherited);
-        //System.out.println("ModelPixie sittingData " + sittingOwn);
-
-        if (entity.isSitting() /*entity.func_233684_eK_()*/) {
-
-            //System.out.println("ModelPixie.setRotationAngles() rendering as sitting.");
+        if (entity.isSitting()) {
 
             this.Right_Arm.rotateAngleX += -((float) Math.PI / 5F);
             this.Left_Arm.rotateAngleX += -((float) Math.PI / 5F);
