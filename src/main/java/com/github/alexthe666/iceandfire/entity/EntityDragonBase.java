@@ -488,7 +488,7 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     protected PathNavigator createNavigator(World worldIn) {
 
         // tweakbd fix, tamed dragon use new Navigator, untamed ones the old
-        PathNavigator newNavigator = this.isTamed() ? new DragonAdvancedPathNavigate(this, world) : new PathNavigateDragon(this, world);
+        PathNavigator newNavigator = new DragonAdvancedPathNavigate(this, world); //this.isTamed() ? new DragonAdvancedPathNavigate(this, world) : new PathNavigateDragon(this, world);
 
         this.navigator = newNavigator;
         newNavigator.setCanSwim(true);
