@@ -2,6 +2,7 @@ package com.github.alexthe666.iceandfire.entity.ai;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -42,14 +43,15 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
                 return item instanceof ItemEntity && !item.getItem().isEmpty() && (item.getItem().getItem() == Items.CAKE && !creature.isTamed() || item.getItem().getItem() == Items.SUGAR && creature.isTamed() && creature.getHealth() < creature.getMaxHealth());
             }
         };
+        this.setMutexFlags(EnumSet.of(Flag.TARGET));
     }
 
     @Override
     public boolean shouldExecute() {
 
         EntityPixie pixie = (EntityPixie)this.goalOwner;
-        if(pixie.isSitting()) return false;
 
+        if(pixie.isPixieSitting()) return false;
         List<ItemEntity> list = this.goalOwner.world.getEntitiesWithinAABB(ItemEntity.class, this.getTargetableArea(this.getTargetDistance()), this.targetEntitySelector);
 
         if (list.isEmpty()) {
@@ -62,7 +64,6 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
     }
 
     protected AxisAlignedBB getTargetableArea(double targetDistance) {
-        // NOTE: Changed y to 4.0 just like AmphitereAITargetItems
         return this.goalOwner.getBoundingBox().grow(targetDistance, 4.0, targetDistance);
     }
 
@@ -70,15 +71,10 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
     public void startExecuting() {
 
         this.goalOwner.getMoveHelper().setMoveTo(this.targetEntity.getPosX(), this.targetEntity.getPosY(), this.targetEntity.getPosZ(), 0.25D);
-        // NOTE: tweakbsd changed code to be like AmphitereAITargetItems
+        // instead of using navigator and tryMoveToXYZ() we use the move helper and set it to move there
         //this.goalOwner.getNavigator().tryMoveToXYZ(this.targetEntity.getPosX(), this.targetEntity.getPosY(), this.targetEntity.getPosZ(), 0.25D);
-        //EntityPixie pixie = (EntityPixie) this.goalOwner;
-
 
         LivingEntity attackTarget = this.goalOwner.getAttackTarget();
-        System.out.println("PixieAIPickup.startExecuting() attackTarget: " + (attackTarget != null ? attackTarget.getDisplayName(): "null"));
-
-        // NOTE: Why getAttackTarget() ???
         if (attackTarget == null) {
             this.goalOwner.getLookController().setLookPosition(this.targetEntity.getPosX(), this.targetEntity.getPosY(), this.targetEntity.getPosZ(), 180.0F, 20.0F);
         }
@@ -92,8 +88,6 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
             this.resetTask();
         }
 
-        System.out.println("PixieAIPickup.tick() targetEntity: " + (this.targetEntity != null ? this.targetEntity.getDisplayName() : "null"));
-
         if (this.targetEntity != null && this.targetEntity.isAlive() && this.goalOwner.getDistanceSq(this.targetEntity) < 1) {
             EntityPixie pixie = (EntityPixie) this.goalOwner;
             if (this.targetEntity.getItem() != null && this.targetEntity.getItem().getItem() != null && this.targetEntity.getItem().getItem() == Items.SUGAR) {
@@ -105,9 +99,7 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
                     pixie.setTamed(true);
                     pixie.setOwnerId(owner.getUniqueID());
                     pixie.setPixieSitting(true);
-                    // NOTE: setOnGround()
-                    pixie.func_230245_c_(true);
-
+                    pixie.func_230245_c_(true);  //  Entity.onGround = true
 
                 }
             }
@@ -121,10 +113,6 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
 
     @Override
     public boolean shouldContinueExecuting() {
-
-
-        //this.goalOwner.setAttackTarget(this.target);
-
         return true;
     }
 

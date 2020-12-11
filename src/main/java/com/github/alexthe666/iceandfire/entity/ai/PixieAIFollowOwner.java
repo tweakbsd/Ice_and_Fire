@@ -53,7 +53,8 @@ public class PixieAIFollowOwner extends Goal {
     }
 
     public boolean shouldContinueExecuting() {
-        return this.tameable.getDistanceSq(this.owner) > (double) (this.maxDist * this.maxDist) && !this.tameable.func_233684_eK_();
+        // first check sitting to save distance calculation in case pixie indeed is
+        return !this.tameable.isPixieSitting() && this.tameable.getDistanceSq(this.owner) > (double) (this.maxDist * this.maxDist);
     }
 
     public void startExecuting() {
@@ -77,8 +78,8 @@ public class PixieAIFollowOwner extends Goal {
     public void tick() {
 
         this.tameable.getLookController().setLookPositionWithEntity(this.owner, 10.0F, (float) this.tameable.getVerticalFaceSpeed());
-
         if (!this.tameable.isPixieSitting()) {
+
             if(this.tameable.ticksExisted < 20) {
                 return;
             }
@@ -90,8 +91,6 @@ public class PixieAIFollowOwner extends Goal {
                 this.tameable.slowSpeed = true;
                 if (!this.tameable.getLeashed()) {
                     if (this.tameable.getDistanceSq(this.owner) >= 50.0D) {
-
-                        //System.out.println("PixieAIFollowOwner.tick() owner distance >= 50");
 
                         int i = MathHelper.floor(this.owner.getPosX()) - 2;
                         int j = MathHelper.floor(this.owner.getPosZ()) - 2;
