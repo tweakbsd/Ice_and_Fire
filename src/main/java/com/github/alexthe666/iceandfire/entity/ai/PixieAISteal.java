@@ -83,13 +83,8 @@ public class PixieAISteal extends Goal {
                 int slot;
                 if(slotlist.size() == 1) {
                     slot = slotlist.get(0);
-<<<<<<< HEAD
-                }else{
-                    slot = slotlist.get(new Random().nextInt(slotlist.size()));
-=======
                 } else {
                      slot = slotlist.get(new Random().nextInt(slotlist.size()));
->>>>>>> 1.16.3-pixierefactor
                 }
                 ItemStack randomItem = this.temptingPlayer.inventory.getStackInSlot(slot);
                 this.temptedEntity.setHeldItem(Hand.MAIN_HAND, randomItem);
