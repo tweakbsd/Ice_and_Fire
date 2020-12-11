@@ -40,10 +40,7 @@ public class PixieAIFollowOwner extends Goal {
             return false;
         } else if (LivingEntity instanceof PlayerEntity && LivingEntity.isSpectator()) {
             return false;
-        } else if (this.tameable.isSitting() /*this.tameable.func_233684_eK_()*/) {
-
-            //System.out.println("PixieAIFollowOwner.shouldExecute() -> false CAUSE isSitting()");
-
+        } else if (this.tameable.isPixieSitting()) {
             return false;
         } else if (this.tameable.getDistanceSq(LivingEntity) < (double) (this.minDist * this.minDist)) {
             return false;
@@ -81,14 +78,8 @@ public class PixieAIFollowOwner extends Goal {
 
         this.tameable.getLookController().setLookPositionWithEntity(this.owner, 10.0F, (float) this.tameable.getVerticalFaceSpeed());
 
-
-        if (this.tameable.isSitting() /*this.tameable.func_233684_eK_()*/) {
-
-            System.out.println("PixieAIFollowOwner.tick() doing nothing! Coords: " + this.tameable.getPosX() + "," + this.tameable.getPosY() + "," + this.tameable.getPosZ());
-        } else {
-
+        if (!this.tameable.isPixieSitting()) {
             if(this.tameable.ticksExisted < 20) {
-                //System.out.println("PixieAIFollowOwner.tick() ticksExisted < 20 - " + this.tameable.ticksExisted);
                 return;
             }
 
@@ -110,8 +101,6 @@ public class PixieAIFollowOwner extends Goal {
                             for (int i1 = 0; i1 <= 4; ++i1) {
                                 if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.isEmptyBlock(new BlockPos(i + l, k, j + i1)) && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
 
-                                    // NOTE: Teleport to owner if distanceSQ to owner is >= 50
-                                    System.out.println("PixieAIFollowOwner.tick() setLocationAndAngles() / teleport ?!?");
                                     this.tameable.setLocationAndAngles((float) (i + l) + 0.5F, (double) k + 1.5, (float) (j + i1) + 0.5F, this.tameable.rotationYaw, this.tameable.rotationPitch);
                                     return;
                                 }

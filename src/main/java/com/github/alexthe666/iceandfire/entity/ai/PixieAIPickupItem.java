@@ -104,7 +104,7 @@ public class PixieAIPickupItem<T extends ItemEntity> extends TargetGoal {
                     PlayerEntity owner = this.goalOwner.world.getPlayerByUuid(this.targetEntity.getThrowerId());
                     pixie.setTamed(true);
                     pixie.setOwnerId(owner.getUniqueID());
-                    pixie.setSitting(true);
+                    pixie.setPixieSitting(true);
                     // NOTE: setOnGround()
                     pixie.func_230245_c_(true);
 
