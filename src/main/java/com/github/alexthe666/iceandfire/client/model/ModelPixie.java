@@ -139,8 +139,8 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
             this.Left_Arm.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.0F * f1 * 0.5F / 1;
         }
 
-        if (entity.isSitting()) {
 
+        if (entity.isPixieSitting()) {
             this.Right_Arm.rotateAngleX += -((float) Math.PI / 5F);
             this.Left_Arm.rotateAngleX += -((float) Math.PI / 5F);
             this.Right_Leg.rotateAngleX = -1.4137167F;
@@ -157,8 +157,6 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
             this.Left_Wing2.rotateAngleZ = (float) Math.toRadians(-8);
             this.Right_Wing2.rotateAngleZ = (float) Math.toRadians(8);
         } else {
-
-            //System.out.println("ModelPixie.setRotationAngles() rendering NOT sitting. ticksExisted:  " + entity.ticksExisted);
 
             this.chainWave(LEFT_WINGS, speed_fly, degree_fly * 0.75F, 1, f2, 1);
             this.chainWave(RIGHT_WINGS, speed_fly, degree_fly * 0.75F, 1, f2, 1);
@@ -280,9 +278,6 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
 
     @Override
     public void renderStatue(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, Entity living) {
-        this.resetToDefaultPose();
         this.render(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-        this.resetToDefaultPose();
     }
 }

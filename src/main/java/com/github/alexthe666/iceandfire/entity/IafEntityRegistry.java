@@ -12,7 +12,6 @@ import com.github.alexthe666.iceandfire.entity.props.ChickenEntityProperties;
 import com.github.alexthe666.iceandfire.entity.props.FrozenEntityProperties;
 import com.github.alexthe666.iceandfire.entity.props.MiscEntityProperties;
 import com.github.alexthe666.iceandfire.entity.props.SirenEntityProperties;
-import com.github.alexthe666.iceandfire.entity.props.StoneEntityProperties;
 import com.github.alexthe666.iceandfire.util.IAFBiomeUtil;
 
 import net.minecraft.entity.EntityClassification;
@@ -100,7 +99,6 @@ public class IafEntityRegistry {
     }
 
     public static void setup() {
-        EntityPropertiesHandler.INSTANCE.registerProperties(StoneEntityProperties.class);
         EntityPropertiesHandler.INSTANCE.registerProperties(MiscEntityProperties.class);
         EntityPropertiesHandler.INSTANCE.registerProperties(FrozenEntityProperties.class);
         EntityPropertiesHandler.INSTANCE.registerProperties(SirenEntityProperties.class);

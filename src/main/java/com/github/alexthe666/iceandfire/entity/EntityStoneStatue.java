@@ -51,6 +51,9 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
                 .func_233815_a_(Attributes.field_233823_f_, 1.0D);
     }
 
+    public void applyEntityCollision(Entity entityIn) {
+    }
+
     @Override
     protected void registerData() {
         super.registerData();
@@ -178,9 +181,16 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
         this.rotationYaw = this.renderYawOffset;
         this.rotationYawHead = this.rotationYaw;
         if(Math.abs(this.getWidth() - getTrappedWidth()) > 0.01 || Math.abs(this.getHeight() - getTrappedHeight())  > 0.01){
-            this.stoneStatueSize = EntitySize.flexible(getTrappedWidth(), getTrappedHeight()).scale(getTrappedScale());
+            double prevX = this.getPosX();
+            double prevZ = this.getPosZ();
+            this.stoneStatueSize = EntitySize.flexible(getTrappedWidth(), getTrappedHeight());
             recalculateSize();
+            this.setPosition(prevX, this.getPosY(), prevZ);
         }
+    }
+
+    public void onKillCommand() {
+        this.remove();
     }
 
     @Override

@@ -26,7 +26,6 @@ import com.github.alexthe666.iceandfire.message.MessageSetMyrmexHiveNull;
 import com.github.alexthe666.iceandfire.message.MessageSirenSong;
 import com.github.alexthe666.iceandfire.message.MessageSpawnParticleAt;
 import com.github.alexthe666.iceandfire.message.MessageStartRidingMob;
-import com.github.alexthe666.iceandfire.message.MessageStoneStatue;
 import com.github.alexthe666.iceandfire.message.MessageSwingArm;
 import com.github.alexthe666.iceandfire.message.MessageUpdateDragonforge;
 import com.github.alexthe666.iceandfire.message.MessageUpdateLectern;
@@ -64,8 +63,8 @@ public class IceAndFire {
     public static final String MODID = "iceandfire";
     public static final SimpleChannel NETWORK_WRAPPER;
     public static boolean DEBUG = false;
-    public static final String VERSION = "2.1.3-1.16.3";
-    public static final String TWEAKBSD_VERSION = "rev1"; // NOTE: My own custom version
+    public static final String VERSION = "2.1.4-1.16.3";
+    public static final String TWEAKBSD_VERSION = "rev2"; // NOTE: My own custom version
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static ItemGroup TAB_ITEMS = new ItemGroup(MODID) {
         @Override
@@ -157,7 +156,6 @@ public class IceAndFire {
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSirenSong.class, MessageSirenSong::write, MessageSirenSong::read, MessageSirenSong.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSpawnParticleAt.class, MessageSpawnParticleAt::write, MessageSpawnParticleAt::read, MessageSpawnParticleAt.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageStartRidingMob.class, MessageStartRidingMob::write, MessageStartRidingMob::read, MessageStartRidingMob.Handler::handle);
-        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageStoneStatue.class, MessageStoneStatue::write, MessageStoneStatue::read, MessageStoneStatue.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdatePixieHouse.class, MessageUpdatePixieHouse::write, MessageUpdatePixieHouse::read, MessageUpdatePixieHouse.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdatePixieHouseModel.class, MessageUpdatePixieHouseModel::write, MessageUpdatePixieHouseModel::read, MessageUpdatePixieHouseModel.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdatePixieJar.class, MessageUpdatePixieJar::write, MessageUpdatePixieJar::read, MessageUpdatePixieJar.Handler::handle);

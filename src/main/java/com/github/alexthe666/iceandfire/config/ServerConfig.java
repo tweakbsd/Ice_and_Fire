@@ -2,6 +2,7 @@ package com.github.alexthe666.iceandfire.config;
 
 import java.util.List;
 
+import com.github.alexthe666.iceandfire.world.DragonPosWorldData;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -147,12 +148,17 @@ public class ServerConfig {
     public ForgeConfigSpec.ConfigValue<List<? extends String>> whitelistDimensions;
     public ForgeConfigSpec.ConfigValue<List<? extends String>> dragonBlacklistDimensions;
     public ForgeConfigSpec.ConfigValue<List<? extends String>> dragonWhitelistDimensions;
+    public ForgeConfigSpec.ConfigValue<List<? extends String>> mobBlacklistDimensions;
+    public ForgeConfigSpec.ConfigValue<List<? extends String>> mobWhitelistDimensions;
+
     public final ForgeConfigSpec.DoubleValue dragonFlightSpeedMod;
     public final ForgeConfigSpec.DoubleValue ghostMaxHealth;
     public final ForgeConfigSpec.DoubleValue ghostAttackStrength;
     public final ForgeConfigSpec.BooleanValue generateGraveyards;
     public final ForgeConfigSpec.IntValue generateGraveyardChance;
     public final ForgeConfigSpec.BooleanValue ghostSpawnFromPlayerDeaths;
+    public ForgeConfigSpec.IntValue dragonPathfindingThreads;
+    public ForgeConfigSpec.IntValue maxDragonPathingNodes;
 
     public ServerConfig(final ForgeConfigSpec.Builder builder) {
         builder.push("general");
@@ -175,6 +181,12 @@ public class ServerConfig {
                 .defineList("blacklistDimensions", Lists.newArrayList("minecraft:the_nether", "minecraft:the_end"), o -> o instanceof String);
         dragonWhitelistDimensions = builder
                 .comment("Whitelist structure gen dimensions. Use the format like \"minecraft:the_nether\" or \"rats:ratlantis\" ")
+                .defineList("blacklistDimensions", Lists.newArrayList("minecraft:overworld"), o -> o instanceof String);
+        mobBlacklistDimensions = builder
+                .comment("Blacklisted mob spawn (troll, hippogryph, etc) dimensions. Use the format like \"minecraft:the_nether\" or \"rats:ratlantis\" ")
+                .defineList("blacklistDimensions", Lists.newArrayList("minecraft:the_nether", "minecraft:the_end"), o -> o instanceof String);
+        mobWhitelistDimensions = builder
+                .comment("Whitelist mob spawn (troll, hippogryph, etc) dimensions. Use the format like \"minecraft:the_nether\" or \"rats:ratlantis\" ")
                 .defineList("blacklistDimensions", Lists.newArrayList("minecraft:overworld"), o -> o instanceof String);
         this.generateCopperOre = buildBoolean(builder, "Generate Copper Ore", "all", true, "Whether to generate copper ore or not");
         this.generateSapphireOre = buildBoolean(builder, "Generate Sapphire Ore", "all", true, "Whether to generate sapphire ore or not");
@@ -342,6 +354,9 @@ public class ServerConfig {
         this.ghostMaxHealth = buildDouble(builder, "Ghost Max Health", "all", 30F, 1.0F, 10000.0F, "Maximum ghost health.");
         this.ghostAttackStrength = buildDouble(builder, "Ghost Attack Strength", "all", 3F, 0.0F, 10000.0F, "Maximum ghost attack strength.");
         this.ghostSpawnFromPlayerDeaths = buildBoolean(builder, "Ghost Spawn from PvP deaths", "all", true, "True if ghosts can rarely spawn from brutal PvP deaths.");
+
+        this.dragonPathfindingThreads = buildInt(builder, "Dragon Pathfinding Threads", "all", 3, 1, Integer.MAX_VALUE, "Maximum threads to use for dragon/myrmex pathfinding. Increase this number if pathing is slow and you have many cores.");
+        this.maxDragonPathingNodes = buildInt(builder, "Dragon Max Pathfinding Nodes", "all", 5000, 1, Integer.MAX_VALUE, "Maximum nodes for dragons/myrmex to path too. Decrease this is dragon pathfinding is super slow or intensive.");
     }
 
     private static ForgeConfigSpec.BooleanValue buildBoolean(ForgeConfigSpec.Builder builder, String name, String catagory, boolean defaultValue, String comment){

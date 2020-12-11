@@ -202,7 +202,6 @@ public class ClientProxy extends CommonProxy {
 
     @OnlyIn(Dist.CLIENT)
     public void postInit() {
-        ClientEvents.initializeStoneLayer();
 
     }
 
