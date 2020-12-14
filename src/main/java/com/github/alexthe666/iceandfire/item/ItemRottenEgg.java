@@ -6,6 +6,7 @@ import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.EggItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -32,10 +33,13 @@ public class ItemRottenEgg extends Item {
 
         if (!worldIn.isRemote) {
             EntityCockatriceEgg entityegg = new EntityCockatriceEgg(IafEntityRegistry.COCKATRICE_EGG, worldIn, playerIn);
-            entityegg.shoot(playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
+            // NOTE: fix EntityCockatriceEgg throwing straight upwards
+            entityegg.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
+            //entityegg.shoot(playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
             worldIn.addEntity(entityegg);
         }
 
         return new ActionResult(ActionResultType.SUCCESS, itemstack);
     }
 }
+
