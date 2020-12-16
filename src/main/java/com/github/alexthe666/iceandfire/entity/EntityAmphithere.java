@@ -637,6 +637,15 @@ public class EntityAmphithere extends TameableEntity implements ISyncMount, IAni
             homePos = new BlockPos(compound.getInt("HomeAreaX"), compound.getInt("HomeAreaY"), compound.getInt("HomeAreaZ"));
         }
         this.setCommand(compound.getInt("Command"));
+
+        // NOTE: Read that Entity was sitting
+        if(this.isSitting()) {
+            // but since sitting is a "process", initiate to start sitting now
+            this.setSitting(false);
+            this.sitProgress = 20.0f;
+            this.setCommand(1);
+
+        }
     }
 
     public boolean getCanSpawnHere() {

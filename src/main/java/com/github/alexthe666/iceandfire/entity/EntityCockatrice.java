@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -359,6 +360,7 @@ public class EntityCockatrice extends TameableEntity implements IAnimatedEntity,
 
     public void setSitting(boolean sitting) {
         super.func_233686_v_(sitting);
+        super.func_233687_w_(sitting);
         if (!world.isRemote) {
             this.isSitting = sitting;
         }
@@ -419,6 +421,21 @@ public class EntityCockatrice extends TameableEntity implements IAnimatedEntity,
         }
     }
 
+    // NOTE: tweakbsd fix to not attack tamable entities with same owner as tamed Cockatrice
+    @Override
+    public boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
+
+        if (this.isTamed() && target instanceof TameableEntity) {
+            TameableEntity tamableTarget = (TameableEntity) target;
+            UUID targetOwner = tamableTarget.getOwnerId();
+            if (targetOwner != null && targetOwner.equals(this.getOwnerId())) {
+                return false;
+            }
+        }
+        return super.shouldAttackEntity(target, owner);
+    }
+
+
     // NOTE: added by tweakbsd
     @Override
     public boolean isBreedingItem(ItemStack stack) {
@@ -437,7 +454,7 @@ public class EntityCockatrice extends TameableEntity implements IAnimatedEntity,
             return super.func_230254_b_(player, hand);
         }
 
-        // NOTE: tweakbsd shouldn't work cause a call to this.isBreedingItem() would fail in super, but I fixed it
+        // NOTE: tweakbsd I see potential problems with Quark here but it's negligible
         if (player.getHeldItem(hand).getItem() == Items.POISONOUS_POTATO) {
             return super.func_230254_b_(player, hand);
         }

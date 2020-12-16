@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.block.BlockGoldPile;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
+import com.github.alexthe666.iceandfire.entity.DragonType;
 import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.world.IafWorldRegistry;
@@ -64,14 +65,13 @@ public class WorldGenIceDragonCave extends Feature<NoFeatureConfig> {
         if(!IafWorldRegistry.isDimensionListedForDragons(worldIn)){
             return false;
         }
-        if(!IafConfig.generateDragonDens || rand.nextInt(IafConfig.generateDragonDenChance) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position) || !IafWorldRegistry.isFarEnoughFromDangerousGen(worldIn, position)){
+        if(!IafConfig.generateDragonDens || rand.nextInt(IafConfig.generateDragonDenChance) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position) || !IafWorldRegistry.isFarEnoughFromDangerousGen(worldIn, position)) {
             return false;
         }
         List<SphereInfo> sphereList = new ArrayList<SphereInfo>();
         position = new BlockPos(position.getX(), 20 + rand.nextInt(20), position.getZ());
-        //isMale = new Random().nextBoolean();
-        isMale = (new Random().nextInt(100) > 50);
-        System.out.println("DragonGen() isMale: " + isMale);
+        isMale = DragonType.generateRandomGender();
+
 
         int dragonAge = 75 + rand.nextInt(50);
         int radius = (int) (dragonAge * 0.2F) + rand.nextInt(8);

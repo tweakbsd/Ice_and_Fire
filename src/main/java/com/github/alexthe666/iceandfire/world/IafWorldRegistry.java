@@ -42,9 +42,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.blockplacer.SimpleBlockPlacer;
@@ -63,6 +66,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -300,18 +304,27 @@ public class IafWorldRegistry {
             return false;
         }
     }
-    public static boolean isFarEnoughFromDangerousGen(IWorld world, BlockPos pos) {
-        /*boolean canGen = true;
-        IafWorldData data = IafWorldData.get(world.getWorld());
-        if (data != null) {
-            BlockPos last = data.lastGeneratedDangerousStructure;
-            canGen = last.distanceSq(pos) > IafConfig.dangerousWorldGenSeparationLimit * IafConfig.dangerousWorldGenSeparationLimit;
-            if (canGen) {
-                data.setLastGeneratedDangerousStructure(pos);
+
+    public static boolean isFarEnoughFromDangerousGen(ISeedReader seedReader, BlockPos pos) {
+        boolean canGen = true;
+
+        // TODO: Check this!
+        if(seedReader != null) {
+
+            IafWorldData data = IafWorldData.get(seedReader.getWorld());
+            if (data != null) {
+                BlockPos last = data.lastGeneratedDangerousStructure;
+                double distanceSq = last.distanceSq(pos);
+                canGen = distanceSq > IafConfig.dangerousWorldGenSeparationLimit * IafConfig.dangerousWorldGenSeparationLimit;
+
+                System.out.println("IafWorldRegistry.isFarEnoughFromDangerousGen() block: " + pos.toString() + " distanceSq to block: " + last.toString() + " = " + distanceSq + " results in canGen: " + canGen);
+
+                if (canGen) {
+                    data.setLastGeneratedDangerousStructure(pos);
+                }
             }
         }
-        return canGen;*/
-        return true;
+        return canGen;
     }
 
     public static HashMap<String, Boolean> LOADED_FEATURES;

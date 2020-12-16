@@ -39,12 +39,15 @@ public class WorldGenHydraCave extends Feature<NoFeatureConfig> {
 
     @Override
     public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator p_230362_3_, Random rand, BlockPos position, NoFeatureConfig p_230362_6_) {
+
         if (!IafWorldRegistry.isDimensionListed(worldIn)) {
             return false;
         }
+
         if (!IafConfig.generateHydraCaves || rand.nextInt(IafConfig.generateHydraChance) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position) || !IafWorldRegistry.isFarEnoughFromDangerousGen(worldIn, position)) {
             return false;
         }
+
         position = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, position);
         int i1 = 8;
         int i2 = i1 - 2;

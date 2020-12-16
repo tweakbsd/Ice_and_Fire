@@ -62,10 +62,10 @@ public class ItemSummoningCrystal extends Item {
 
         boolean flag = false;
         String desc = "entity.firedragon.name";
-        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_ICE){
+        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_ICE) {
             desc = "entity.icedragon.name";
         }
-        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING){
+        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING) {
             desc = "entity.lightningdragon.name";
         }
         if (stack.getTag() != null) {
@@ -103,10 +103,16 @@ public class ItemSummoningCrystal extends Item {
                         dragonCount++;
                         CompoundNBT dragonTag = stack.getTag().getCompound(tagInfo);
                         UUID id = dragonTag.getUniqueId("DragonUUID");
+
+                        System.out.println("Trying to summon Dragon by UUID :" + id.toString());
+
                         if (id != null) {
                             if (!context.getWorld().isRemote) {
                                 try {
+
                                     Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(id);
+                                    System.out.println("Running on client -> ServerWorld getEntityByUUID() returned: " + (entity != null ? entity.getCustomName().toString() : "null"));
+
                                     if (entity != null) {
                                         flag = true;
                                         summonEntity(entity, context.getWorld(), offsetPos, yaw);
@@ -116,17 +122,31 @@ public class ItemSummoningCrystal extends Item {
                                     displayError = true;
                                 }
                                 // ForgeChunkManager.Ticket ticket = null;
-                                DragonPosWorldData data = DragonPosWorldData.get(context.getWorld());
+                                /*DragonPosWorldData data = DragonPosWorldData.get(context.getWorld());
                                 BlockPos dragonChunkPos = null;
                                 if (data != null) {
                                     dragonChunkPos = data.getDragonPos(id);
                                 }
+                                 */
+
+                            }
+
+                            DragonPosWorldData data = DragonPosWorldData.get(context.getWorld());
+                            BlockPos dragonChunkPos = null;
+                            if (data != null) {
+                                dragonChunkPos = data.getDragonPos(id);
+                            }
+
+
+
                                 if (IafConfig.chunkLoadSummonCrystal) {
                                     try {
                                         boolean flag2 = false;
-                                        if (!flag) {//server side but couldn't find dragon
+                                        if (!flag) { //server side but couldn't find dragon
                                             if (data != null) {
-                                                if(context.getWorld().isRemote){
+
+                                                // NOTE: I thinks this code can never run because we are inside this if (!context.getWorld().isRemote) { }
+                                                if(context.getWorld().isRemote) {
                                                     ServerWorld serverWorld = (ServerWorld)context.getWorld();
                                                     ChunkPos pos = new ChunkPos(dragonChunkPos);
                                                     serverWorld.forceChunk(pos.x, pos.z, true);
@@ -163,7 +183,7 @@ public class ItemSummoningCrystal extends Item {
                                         e.printStackTrace();
                                     }
                                 }
-                            }
+                           // }
                         }
                     }
                 }
