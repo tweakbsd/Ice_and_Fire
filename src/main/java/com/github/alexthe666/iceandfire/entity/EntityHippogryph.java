@@ -548,10 +548,9 @@ public class EntityHippogryph extends TameableEntity implements ISyncMount, IAni
         }
         this.setCommand(compound.getInt("Command"));
 
-        if (this.isSitting()) {
+        if(this.isSitting()) {
             this.sitProgress = 20.0F;
         }
-
     }
 
     public int getVariant() {
