@@ -33,7 +33,6 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.world.World;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.common.brewing.BrewingRecipe;
