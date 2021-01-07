@@ -1,10 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -52,8 +50,6 @@ import com.github.alexthe666.iceandfire.message.MessageDragonControl;
 import com.github.alexthe666.iceandfire.message.MessageDragonSetBurnBlock;
 import com.github.alexthe666.iceandfire.message.MessageStartRidingMob;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
-import com.github.alexthe666.iceandfire.pathfinding.PathNavigateDragon;
-import com.github.alexthe666.iceandfire.pathfinding.PathNavigateFlyingCreature;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.DragonAdvancedPathNavigate;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.IPassabilityNavigator;
 import com.github.alexthe666.iceandfire.world.DragonPosWorldData;
@@ -477,11 +473,9 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
 
     protected abstract void breathFireAtPos(BlockPos burningTarget);
 
-    protected PathNavigator createNavigator(World worldIn) {
 
-        // tweakbd fix, tamed dragon use new Navigator, untamed ones the old
-        PathNavigator newNavigator = new DragonAdvancedPathNavigate(this, world); //this.isTamed() ? new DragonAdvancedPathNavigate(this, world) : new PathNavigateDragon(this, world);
-
+    protected PathNavigator createNavigator(World worldIn, boolean canFly) {
+        DragonAdvancedPathNavigate newNavigator = new DragonAdvancedPathNavigate(this, world,canFly);
         this.navigator = newNavigator;
         newNavigator.setCanSwim(true);
         newNavigator.getNodeProcessor().setCanOpenDoors(true);
@@ -492,17 +486,17 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
     protected void switchNavigator(int navigatorType) {
         if (navigatorType == 0) {
             this.moveController = new IafDragonFlightManager.GroundMoveHelper(this);
-            this.navigator = createNavigator(world);
+            this.navigator = createNavigator(world,false);
             this.navigatorType = 0;
             this.setFlying(false);
             this.setHovering(false);
         } else if (navigatorType == 1) {
             this.moveController = new IafDragonFlightManager.FlightMoveHelper(this);
-            this.navigator = new PathNavigateFlyingCreature(this, world);
+            this.navigator = createNavigator(world,true);
             this.navigatorType = 1;
         } else {
             this.moveController = new IafDragonFlightManager.PlayerFlightMoveHelper(this);
-            this.navigator = new PathNavigateFlyingCreature(this, world);
+            this.navigator = createNavigator(world,true);
             this.navigatorType = 2;
         }
     }

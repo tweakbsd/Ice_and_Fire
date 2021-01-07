@@ -4,11 +4,12 @@ import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.pathfinding.FlyingNodeProcessor;
 import net.minecraft.pathfinding.WalkNodeProcessor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Region;
 
-public class NodeProcessorDragon extends WalkNodeProcessor {
+public class NodeProcessorDragonWalk extends WalkNodeProcessor {
 
     public void func_225578_a_(Region p_225578_1_, MobEntity p_225578_2_) {
         super.func_225578_a_(p_225578_1_, p_225578_2_);

@@ -45,6 +45,9 @@ public class EntityTideTrident extends TridentEntity {
         super(type, worldIn);
         thrownStack = new ItemStack(IafItemRegistry.TIDE_TRIDENT);
         this.setPierceLevel((byte)PIERCE_LEVEL);  // NOTE: How many targets it should pierce
+        this.setShotFromCrossbow(true);  // NOTE: Crossbow has piercing, so let's try this
+
+
         //this.damage = ATTACK_DAMAGE;
     }
 
@@ -71,6 +74,7 @@ public class EntityTideTrident extends TridentEntity {
         this.dataManager.set(LOYALTY_LEVEL, (byte)EnchantmentHelper.getLoyaltyModifier(thrownStack));
         this.dataManager.set(field_226571_aq_, thrownStack.hasEffect());
         this.setPierceLevel((byte)PIERCE_LEVEL);  // NOTE: How many targets it should pierce
+        this.setShotFromCrossbow(true);  // NOTE: Crossbow has piercing, so let's try this
     }
 
     @Override
@@ -78,10 +82,69 @@ public class EntityTideTrident extends TridentEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-
     @Override
     protected void onEntityHit(EntityRayTraceResult p_213868_1_) {
-        super.onEntityHit(p_213868_1_);
+        Entity entity = p_213868_1_.getEntity();
+        float f = ATTACK_DAMAGE;
+        if (entity instanceof LivingEntity) {
+            LivingEntity livingentity = (LivingEntity) entity;
+            f += EnchantmentHelper.getModifierForCreature(this.thrownStack, livingentity.getCreatureAttribute());
+        }
+
+        Entity entity1 = this.func_234616_v_();
+        DamageSource damagesource = DamageSource.causeTridentDamage(this, entity1 == null ? this : entity1);
+
+        this.dealtDamage = true;
+        /*
+        Same as above line
+        try {
+            Field dealtDamageField = ObfuscationReflectionHelper.findField(EntityTideTrident.class, "field_226571_aq_");
+            Field modifier = Field.class.getDeclaredField("modifiers");
+            modifier.setAccessible(true);
+            dealtDamageField.set(this, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+         */
+        SoundEvent soundevent = SoundEvents.ITEM_TRIDENT_HIT;
+        if (entity.attackEntityFrom(damagesource, f)) {
+            if (entity.getType() == EntityType.ENDERMAN) {
+                return;
+            }
+
+            if (entity instanceof LivingEntity) {
+                LivingEntity livingentity1 = (LivingEntity) entity;
+                if (entity1 instanceof LivingEntity) {
+                    EnchantmentHelper.applyThornEnchantments(livingentity1, entity1);
+                    EnchantmentHelper.applyArthropodEnchantments((LivingEntity) entity1, livingentity1);
+                }
+
+                this.arrowHit(livingentity1);
+            }
+        }
+
+        this.setMotion(this.getMotion().mul(-0.01D, -0.1D, -0.01D));
+        float f1 = 1.0F;
+        if (this.world instanceof ServerWorld && this.world.isThundering() && EnchantmentHelper.hasChanneling(this.thrownStack)) {
+            BlockPos blockpos = entity.func_233580_cy_();
+            if (this.world.canSeeSky(blockpos)) {
+                LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.world);
+                lightningboltentity.func_233576_c_(Vector3d.func_237492_c_(blockpos));
+                lightningboltentity.setCaster(entity1 instanceof ServerPlayerEntity ? (ServerPlayerEntity)entity1 : null);
+                this.world.addEntity(lightningboltentity);
+                soundevent = SoundEvents.ITEM_TRIDENT_THUNDER;
+                f1 = 5.0F;
+            }
+        }
+
+        this.playSound(soundevent, f1, 1.0F);
+    }
+
+
+    protected void onEntityHit_TryToFixPiercing(EntityRayTraceResult p_213868_1_) {
+        //super.onEntityHit(p_213868_1_);
+        // NOTE: Cannot call super, or we get normal Trident behaviour and no piercing
+
         Entity entity = p_213868_1_.getEntity();
         float f =  ATTACK_DAMAGE;  //(float)this.getMotion().length();
         int i = MathHelper.ceil(MathHelper.clamp((double)f, 0.0D, 2.147483647E9D));
@@ -142,11 +205,13 @@ public class EntityTideTrident extends TridentEntity {
             if (entity instanceof LivingEntity) {
                 LivingEntity livingentity = (LivingEntity)entity;
 
+                /*
                 if (!this.world.isRemote && this.getPierceLevel() <= 0) {
 
                     // NOTE: No piercing, we are done
                     //livingentity.setArrowCountInEntity(livingentity.getArrowCountInEntity() + 1);
                 }
+                */
 
                 if (this.knockbackStrength > 0) {
                     Vector3d vector3d = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize().scale((double)this.knockbackStrength * 0.6D);
@@ -162,6 +227,7 @@ public class EntityTideTrident extends TridentEntity {
 
                 System.out.println("PIERCED attackEntity() was TRUE, calling arrowHit() ...");
                 this.arrowHit(livingentity);
+
                 if (entity1 != null && livingentity != entity1 && livingentity instanceof PlayerEntity && entity1 instanceof ServerPlayerEntity && !this.isSilent()) {
                     ((ServerPlayerEntity)entity1).connection.sendPacket(new SChangeGameStatePacket(SChangeGameStatePacket.field_241770_g_, 0.0F));
                 }
@@ -198,6 +264,7 @@ public class EntityTideTrident extends TridentEntity {
 
             System.out.println("PIERCED attackEntity() was FALSE.");
 
+            // NOTE: this.fire = k
             entity.func_241209_g_(k);
             this.setMotion(this.getMotion().scale(-0.1D));
             this.rotationYaw += 180.0F;

@@ -50,6 +50,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.blockplacer.SimpleBlockPlacer;
 import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.feature.BlockClusterFeatureConfig;
@@ -306,22 +307,33 @@ public class IafWorldRegistry {
     }
 
     public static boolean isFarEnoughFromDangerousGen(ISeedReader seedReader, BlockPos pos) {
-        boolean canGen = true;
+        boolean canGen = false;
 
         // TODO: Check this!
-        if(seedReader != null) {
+        if (seedReader != null) {
 
             IafWorldData data = IafWorldData.get(seedReader.getWorld());
             if (data != null) {
                 BlockPos last = data.lastGeneratedDangerousStructure;
                 double distanceSq = last.distanceSq(pos);
                 canGen = distanceSq > IafConfig.dangerousWorldGenSeparationLimit * IafConfig.dangerousWorldGenSeparationLimit;
-
-                System.out.println("IafWorldRegistry.isFarEnoughFromDangerousGen() block: " + pos.toString() + " distanceSq to block: " + last.toString() + " = " + distanceSq + " results in canGen: " + canGen);
-
                 if (canGen) {
                     data.setLastGeneratedDangerousStructure(pos);
                 }
+
+            }
+        }
+        return canGen;
+    }
+
+    public static boolean isFarEnoughFromDangerousGen_other(IWorld world, BlockPos pos) {
+        boolean canGen = true;
+        IafWorldData data = IafWorldData.get(((WorldGenRegion) world).getWorld());
+        if (data != null) {
+            BlockPos last = data.lastGeneratedDangerousStructure;
+            canGen = last.distanceSq(pos) > IafConfig.dangerousWorldGenSeparationLimit * IafConfig.dangerousWorldGenSeparationLimit;
+            if (canGen) {
+                data.setLastGeneratedDangerousStructure(pos);
             }
         }
         return canGen;
