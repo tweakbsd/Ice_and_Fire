@@ -306,6 +306,7 @@ public class IafWorldRegistry {
         }
     }
 
+
     public static boolean isFarEnoughFromDangerousGen(ISeedReader seedReader, BlockPos pos) {
         boolean canGen = false;
 
@@ -326,15 +327,18 @@ public class IafWorldRegistry {
         return canGen;
     }
 
-    public static boolean isFarEnoughFromDangerousGen_other(IWorld world, BlockPos pos) {
+
+    public static boolean isFarEnoughFromDangerousGen(IServerWorld world, BlockPos pos) {
+
         boolean canGen = true;
-        IafWorldData data = IafWorldData.get(((WorldGenRegion) world).getWorld());
+        IafWorldData data = IafWorldData.get(world.getWorld());
         if (data != null) {
             BlockPos last = data.lastGeneratedDangerousStructure;
             canGen = last.distanceSq(pos) > IafConfig.dangerousWorldGenSeparationLimit * IafConfig.dangerousWorldGenSeparationLimit;
             if (canGen) {
                 data.setLastGeneratedDangerousStructure(pos);
             }
+
         }
         return canGen;
     }
