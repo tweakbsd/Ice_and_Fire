@@ -1045,6 +1045,8 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
         int lastDeathStage = this.getAgeInDays() / 5;
         if (stack.getItem() == IafItemRegistry.DRAGON_DEBUG_STICK) {
             logic.debug();
+            this.setGender(!this.isMale());
+
             return ActionResultType.SUCCESS;
         }
         if (this.isModelDead() && this.getDeathStage() < lastDeathStage && player.isAllowEdit()) {
