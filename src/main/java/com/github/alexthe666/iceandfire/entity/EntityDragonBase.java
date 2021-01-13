@@ -1131,6 +1131,7 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
                     }
                     CompoundNBT dragonTag = new CompoundNBT();
                     dragonTag.putUniqueId("DragonUUID", this.getUniqueID());
+                    dragonTag.putInt("DragonID", this.getEntityId());
                     if (this.getCustomName() != null) {
                         dragonTag.putString("CustomName", this.getCustomName().getString());
                     }

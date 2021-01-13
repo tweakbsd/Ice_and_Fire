@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "parent": "minecraft:block/template_torch_wall",
-=======
   "parent": "block/wall_torch",
->>>>>>> 22bcd94fb80799525e53f839ca5b1c773f51944c
   "textures": {
     "torch": "iceandfire:block/dread_torch"
   }

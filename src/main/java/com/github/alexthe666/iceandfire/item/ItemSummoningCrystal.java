@@ -102,16 +102,34 @@ public class ItemSummoningCrystal extends Item {
                     if (tagInfo.contains("Dragon")) {
                         dragonCount++;
                         CompoundNBT dragonTag = stack.getTag().getCompound(tagInfo);
-                        UUID id = dragonTag.getUniqueId("DragonUUID");
+                        UUID uuid = dragonTag.getUniqueId("DragonUUID");
 
-                        System.out.println("Trying to summon Dragon by UUID :" + id.toString());
+                        final int ID_UNKNOWN = -4711;
+                        int id = ID_UNKNOWN; // NOTE: Arbitrarily chosen negative number
+                        if(dragonTag.contains("DragonID")) {
+                            id = dragonTag.getInt("DragonID");
+                        }
 
-                        if (id != null) {
+
+                        System.out.println("Trying to summon Dragon by UUID:" + uuid + " or by ID: " + id);
+
+                        //if (uuid != null || id != ID_UNKNOWN ) {
                             if (!context.getWorld().isRemote) {
                                 try {
 
-                                    Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(id);
+                                    Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(uuid);
                                     System.out.println("Running on client -> ServerWorld getEntityByUUID() returned: " + (entity != null ? entity.getCustomName().toString() : "null"));
+
+                                    if(entity == null && id != ID_UNKNOWN) {
+                                        entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByID(id);
+                                        System.out.println("Running on client -> ServerWorld getEntityByID() returned: " + (entity != null ? entity.getCustomName().toString() : "null"));
+
+                                        if(!(entity instanceof EntityDragonBase)) {
+                                            entity = null;
+                                        } else {
+                                            uuid = entity.getUniqueID();
+                                        }
+                                    }
 
                                     if (entity != null) {
                                         flag = true;
@@ -121,6 +139,7 @@ public class ItemSummoningCrystal extends Item {
                                     e.printStackTrace();
                                     displayError = true;
                                 }
+
                                 // ForgeChunkManager.Ticket ticket = null;
                                 /*DragonPosWorldData data = DragonPosWorldData.get(context.getWorld());
                                 BlockPos dragonChunkPos = null;
@@ -134,7 +153,7 @@ public class ItemSummoningCrystal extends Item {
                             DragonPosWorldData data = DragonPosWorldData.get(context.getWorld());
                             BlockPos dragonChunkPos = null;
                             if (data != null) {
-                                dragonChunkPos = data.getDragonPos(id);
+                                dragonChunkPos = data.getDragonPos(uuid);
                             }
 
 
@@ -165,7 +184,11 @@ public class ItemSummoningCrystal extends Item {
                                         }
                                         if (flag2) {
                                             try {
-                                                Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(id);
+                                                Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(uuid);
+                                                if(entity == null && id != ID_UNKNOWN) {
+                                                    entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByID(id);
+                                                }
+
                                                 if (entity != null) {
                                                     flag = true;
                                                     summonEntity(entity, context.getWorld(), offsetPos, yaw);
@@ -184,7 +207,7 @@ public class ItemSummoningCrystal extends Item {
                                     }
                                 }
                            // }
-                        }
+                        //}
                     }
                 }
             }
