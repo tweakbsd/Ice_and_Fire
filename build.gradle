@@ -112,6 +112,7 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.3.19")
     compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-1.16.4:7.1.0.80")
     compile 'citadel:citadel:1.5.3:deobf'
+    //compile files('libs/SpartanWeaponry-1.16.4-2.1.0-beta-3.jar')
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
