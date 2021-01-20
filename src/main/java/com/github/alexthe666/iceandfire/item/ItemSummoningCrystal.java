@@ -62,10 +62,10 @@ public class ItemSummoningCrystal extends Item {
 
         boolean flag = false;
         String desc = "entity.firedragon.name";
-        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_ICE) {
+        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_ICE){
             desc = "entity.icedragon.name";
         }
-        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING) {
+        if(stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING){
             desc = "entity.lightningdragon.name";
         }
         if (stack.getTag() != null) {
@@ -91,127 +91,37 @@ public class ItemSummoningCrystal extends Item {
 
     public ActionResultType onItemUse(ItemUseContext context) {
         ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
-        boolean flag = false;
+        boolean foundDragon = false;
         BlockPos offsetPos = context.getPos().offset(context.getFace());
         float yaw = context.getPlayer().rotationYaw;
         boolean displayError = false;
         if (stack.getItem() == this && hasDragon(stack)) {
-            int dragonCount = 0;
-            if (stack.getTag() != null) {
-                for (String tagInfo : stack.getTag().keySet()) {
-                    if (tagInfo.contains("Dragon")) {
-                        dragonCount++;
-                        CompoundNBT dragonTag = stack.getTag().getCompound(tagInfo);
-                        UUID uuid = dragonTag.getUniqueId("DragonUUID");
+            CompoundNBT tag = stack.getTag();
+            if (tag != null && tag.contains("Dragon")) {
+                CompoundNBT dragonTag = tag.getCompound("Dragon");
+                UUID dragonUUID = dragonTag.getUniqueId("DragonUUID");
+                if (dragonUUID != null) {
+                    if (!context.getWorld().isRemote) {
+                        try {
+                            Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(dragonUUID);
+                            if (entity != null) {
+                                foundDragon = true;
+                                summonEntity(entity, context.getWorld(), offsetPos, yaw);
 
-                        final int ID_UNKNOWN = -4711;
-                        int id = ID_UNKNOWN; // NOTE: Arbitrarily chosen negative number
-                        if(dragonTag.contains("DragonID")) {
-                            id = dragonTag.getInt("DragonID");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            displayError = true;
                         }
-
-
-                        System.out.println("Trying to summon Dragon by UUID:" + uuid + " or by ID: " + id);
-
-                        //if (uuid != null || id != ID_UNKNOWN ) {
-                            if (!context.getWorld().isRemote) {
-                                try {
-
-                                    Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(uuid);
-                                    System.out.println("Running on client -> ServerWorld getEntityByUUID() returned: " + (entity != null ? entity.getCustomName().toString() : "null"));
-
-                                    if(entity == null && id != ID_UNKNOWN) {
-                                        entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByID(id);
-                                        System.out.println("Running on client -> ServerWorld getEntityByID() returned: " + (entity != null ? entity.getCustomName().toString() : "null"));
-
-                                        if(!(entity instanceof EntityDragonBase)) {
-                                            entity = null;
-                                        } else {
-                                            uuid = entity.getUniqueID();
-                                        }
-                                    }
-
-                                    if (entity != null) {
-                                        flag = true;
-                                        summonEntity(entity, context.getWorld(), offsetPos, yaw);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    displayError = true;
-                                }
-
-                                // ForgeChunkManager.Ticket ticket = null;
-                                /*DragonPosWorldData data = DragonPosWorldData.get(context.getWorld());
-                                BlockPos dragonChunkPos = null;
-                                if (data != null) {
-                                    dragonChunkPos = data.getDragonPos(id);
-                                }
-                                 */
-
-                            }
-
-                            DragonPosWorldData data = DragonPosWorldData.get(context.getWorld());
-                            BlockPos dragonChunkPos = null;
-                            if (data != null) {
-                                dragonChunkPos = data.getDragonPos(uuid);
-                            }
-
-
-
-                                if (IafConfig.chunkLoadSummonCrystal) {
-                                    try {
-                                        boolean flag2 = false;
-                                        if (!flag) { //server side but couldn't find dragon
-                                            if (data != null) {
-
-                                                // NOTE: I thinks this code can never run because we are inside this if (!context.getWorld().isRemote) { }
-                                                if(context.getWorld().isRemote) {
-                                                    ServerWorld serverWorld = (ServerWorld)context.getWorld();
-                                                    ChunkPos pos = new ChunkPos(dragonChunkPos);
-                                                    serverWorld.forceChunk(pos.x, pos.z, true);
-                                                }
-                                                /*ticket = ForgeChunkManager.requestPlayerTicket(IceAndFire.INSTANCE, player.getName(), worldIn, ForgeChunkManager.Type.NORMAL);
-                                                if (ticket != null) {
-                                                    if (dragonChunkPos != null) {
-                                                        ForgeChunkManager.forceChunk(ticket, new ChunkPos(dragonChunkPos));
-                                                    } else {
-                                                        displayError = true;
-                                                    }
-                                                    lastChunkTicket = ticket;
-                                                    flag2 = true;
-                                                }*/
-                                            }
-                                        }
-                                        if (flag2) {
-                                            try {
-                                                Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(uuid);
-                                                if(entity == null && id != ID_UNKNOWN) {
-                                                    entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByID(id);
-                                                }
-
-                                                if (entity != null) {
-                                                    flag = true;
-                                                    summonEntity(entity, context.getWorld(), offsetPos, yaw);
-                                                }
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                       /* if (flag && lastChunkTicket != null && dragonChunkPos != null) {
-                                            ForgeChunkManager.releaseTicket(lastChunkTicket);
-                                            lastChunkTicket = null;
-                                        }*/
-                                    } catch (Exception e) {
-                                        IceAndFire.LOGGER.warn("Could not load chunk when summoning dragon");
-                                        e.printStackTrace();
-                                    }
-                                }
-                           // }
-                        //}
+                    } else {
+                        // TODO: check if we can
+                        System.out.println("SummoningCrystal world isRemote, doing nothing now!");
                     }
                 }
+
             }
-            if (flag) {
+
+            if (foundDragon) {
                 context.getPlayer().playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1, 1);
                 context.getPlayer().playSound(SoundEvents.BLOCK_GLASS_BREAK, 1, 1);
                 context.getPlayer().swingArm(context.getHand());

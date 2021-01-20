@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.item;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -66,10 +67,20 @@ public class ItemDragonHorn extends Item {
         ItemStack trueStack = playerIn.getHeldItem(hand);
         if(!playerIn.world.isRemote){
             if (target instanceof EntityDragonBase && ((EntityDragonBase) target).isOwner(playerIn) && (trueStack.getTag() == null || trueStack.getTag() != null && trueStack.getTag().getCompound("EntityTag").isEmpty())) {
+
+                EntityDragonBase entityDragon = (EntityDragonBase)target;
+
                 CompoundNBT entityTag = new CompoundNBT();
                 target.writeAdditional(entityTag);
                 CompoundNBT newTag = new CompoundNBT();
                 newTag.putString("DragonHornEntityID", Registry.ENTITY_TYPE.getKey(target.getType()).toString());
+                // NOTE: Save the UUID so we can use it when restoring the dragon and all our lovely summoning crystals should work always
+
+
+                UUID dragonUuid = entityDragon.getUniqueID();
+                System.out.println("Storing Dragon with UUID in horn: " + dragonUuid);
+
+                newTag.putUniqueId("DragonUUID", dragonUuid);
                 newTag.put("EntityTag", entityTag);
                 trueStack.setTag(newTag);
                 playerIn.swingArm(hand);
@@ -96,10 +107,29 @@ public class ItemDragonHorn extends Item {
                     if (entity instanceof EntityDragonBase) {
                         EntityDragonBase dragon = (EntityDragonBase) entity;
                         dragon.readAdditional(stack.getTag().getCompound("EntityTag"));
-                    }
-                    entity.setLocationAndAngles(context.getPos().getX() + 0.5, context.getPos().getY() + 1, context.getPos().getZ() + 0.5, context.getPlayer().rotationYaw, 0);
-                    if (world.addEntity(entity)) {
-                        stack.setTag(new CompoundNBT());
+
+                        boolean reportBrokenSummoningCrystals = true;
+                        UUID uuidWanted = null;
+                        // NOTE: Compatibility with items that do not have this key yet
+                        if(stack.getTag().hasUniqueId("DragonUUID")) {
+                            uuidWanted = stack.getTag().getUniqueId("DragonUUID");
+                            dragon.setUniqueId(uuidWanted);
+                        }
+
+                        dragon.setLocationAndAngles(context.getPos().getX() + 0.5, context.getPos().getY() + 1, context.getPos().getZ() + 0.5, context.getPlayer().rotationYaw, 0);
+                        if (world.addEntity(dragon)) {
+
+                            if(uuidWanted != null && dragon.getUniqueID().equals(uuidWanted)) {
+                                reportBrokenSummoningCrystals = false;
+                            }
+                            stack.setTag(new CompoundNBT());
+
+                            if(reportBrokenSummoningCrystals && dragon.isBoundToCrystal()) {
+                                context.getPlayer().sendStatusMessage(new TranslationTextComponent("message.iceandfire.dragonTeleportBroken"), true);
+                            }
+
+                        }
+
                     }
                 }
             }
@@ -120,13 +150,13 @@ public class ItemDragonHorn extends Item {
                     String name = new TranslationTextComponent("dragon.unnamed").getString();
                     if(!entityTag.getString("CustomName").isEmpty()){
                         IFormattableTextComponent component = ITextComponent.Serializer.func_240644_b_(entityTag.getString("CustomName"));
-                        if(component != null){
+                        if(component != null) {
                             name = component.getString();
                         }
                     }
+
                     tooltip.add(new StringTextComponent(name).func_240699_a_(TextFormatting.GRAY));
                     String gender = new TranslationTextComponent("dragon.gender").getString() + " " + new TranslationTextComponent((entityTag.getBoolean("Gender") ? "dragon.gender.male" : "dragon.gender.female")).getString();
-                    System.out.println("ItemDragonHorn() entityId: " + id + " gender: " + gender);
 
                     tooltip.add(new StringTextComponent(gender).func_240699_a_(TextFormatting.GRAY));
                     int stagenumber = entityTag.getInt("AgeTicks") / 24000;
