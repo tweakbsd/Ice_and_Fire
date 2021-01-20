@@ -2340,6 +2340,11 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
         super.onRemovedFromWorld();
     }
 
+    @Override
+    public boolean canBeRiddenInWater(Entity rider)
+    {
+        return true;
+    }
 
     // NOTE: tweakbsd fix to not attack tamable entities with same owner as tamed dragon
     @Override

@@ -292,7 +292,7 @@ public class IafItemRegistry {
     public static final Item DRAGONSTEEL_FIRE_BOOTS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 3, EquipmentSlotType.FEET, "dragonsteel_fire_boots", "iceandfire.dragonsteel_fire_boots", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
 
     // NOTE: not fire immune dragonsteel
-    public static final Item DRAGONSTEEL_ICE_INGOT = new ItemGeneric("dragonsteel_ice_ingot");
+    public static final Item DRAGONSTEEL_ICE_INGOT = new ItemWithResistance("dragonsteel_ice_ingot").makeImmuneToCactus().makeImmuneToFire();
     public static final Item DRAGONSTEEL_ICE_SWORD = new ItemModSword(DRAGONSTEEL_ICE_TOOL_MATERIAL, "dragonsteel_ice_sword");
     public static final Item DRAGONSTEEL_ICE_PICKAXE = new ItemModPickaxe(DRAGONSTEEL_ICE_TOOL_MATERIAL, "dragonsteel_ice_pickaxe");
     public static final Item DRAGONSTEEL_ICE_AXE = new ItemModAxe(DRAGONSTEEL_ICE_TOOL_MATERIAL, "dragonsteel_ice_axe");

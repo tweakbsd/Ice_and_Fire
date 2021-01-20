@@ -169,6 +169,7 @@ public class IafEntityRegistry {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+
         bakeAttributes();
     }
 

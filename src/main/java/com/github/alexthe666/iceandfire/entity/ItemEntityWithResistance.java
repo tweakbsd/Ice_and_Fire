@@ -25,10 +25,12 @@ public class ItemEntityWithResistance extends ItemEntity {
     private static final DataParameter<Boolean> IMMUNE_TO_EXPLOSIONS = EntityDataManager.createKey(ItemEntityWithResistance.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IMMUNE_TO_FIRE = EntityDataManager.createKey(ItemEntityWithResistance.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IMMUNE_TO_LIGHTNING = EntityDataManager.createKey(ItemEntityWithResistance.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IMMUNE_TO_CACTUS = EntityDataManager.createKey(ItemEntityWithResistance.class, DataSerializers.BOOLEAN);
 
     public boolean isImmuneToExplosions = false;
     public boolean isImmuneToFire = false;
     public boolean isImmuneToLightning = false;
+    public boolean isImmuneToCactus = false;
     //private List<DamageSource> immuneToDamageSources = Lists.newArrayList();
 
     public ItemEntityWithResistance(EntityType entityType, World world) {
@@ -61,6 +63,7 @@ public class ItemEntityWithResistance extends ItemEntity {
         this.getDataManager().register(IMMUNE_TO_EXPLOSIONS, this.isImmuneToExplosions);
         this.getDataManager().register(IMMUNE_TO_FIRE, this.isImmuneToFire);
         this.getDataManager().register(IMMUNE_TO_LIGHTNING, this.isImmuneToLightning);
+        this.getDataManager().register(IMMUNE_TO_CACTUS, this.isImmuneToCactus);
     }
 
     @Override
@@ -70,6 +73,7 @@ public class ItemEntityWithResistance extends ItemEntity {
         this.setIsImmuneToLightning(compound.getBoolean("ImmuneToLightning"));
         this.setIsImmuneToFire(compound.getBoolean("ImmuneToFire"));
         this.setIsImmuneToExplosions(compound.getBoolean("ImmuneToExplosions"));
+        this.setIsImmuneToCactus(compound.getBoolean("ImmuneToCactus"));
     }
 
     @Override
@@ -79,6 +83,7 @@ public class ItemEntityWithResistance extends ItemEntity {
         compound.putBoolean("ImmuneToLightning", this.isImmuneToLightning);
         compound.putBoolean("ImmuneToFire", this.isImmuneToFire);
         compound.putBoolean("ImmuneToExplosions", this.isImmuneToExplosions);
+        compound.putBoolean("ImmuneToCactus", this.isImmuneToCactus);
     }
 
     ItemEntityWithResistance makeImmuneToFire() {
@@ -95,6 +100,11 @@ public class ItemEntityWithResistance extends ItemEntity {
 
     ItemEntityWithResistance makeImmuneToExplosions() {
         this.setIsImmuneToExplosions(true);
+        return this;
+    }
+
+    ItemEntityWithResistance makeImmuneToCactus() {
+        this.setIsImmuneToCactus(true);
         return this;
     }
 
@@ -142,6 +152,9 @@ public class ItemEntityWithResistance extends ItemEntity {
         } else if(this.isImmuneToFire() && (source.isFireDamage() || source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE)) {
             System.out.println("Item isInvulnerableTo(fire) true");
             return true;
+        } else if(this.isImmuneToCactus() && source == DamageSource.CACTUS) {
+            System.out.println("Item isInvulnerableTo(cactus) true");
+            return true;
         }
 
         System.out.println("Item isInvulnerableTo(" + source.toString() + ") calling super");
@@ -172,6 +185,16 @@ public class ItemEntityWithResistance extends ItemEntity {
     public void setIsImmuneToLightning(boolean immune) {
         this.isImmuneToLightning = immune;
         this.getDataManager().set(IMMUNE_TO_LIGHTNING, immune);
+    }
+
+    public boolean isImmuneToCactus() {
+        this.isImmuneToCactus = this.getDataManager().get(IMMUNE_TO_CACTUS).booleanValue();
+        return this.isImmuneToCactus;
+    }
+
+    public void setIsImmuneToCactus(boolean immune) {
+        this.isImmuneToCactus = immune;
+        this.getDataManager().set(IMMUNE_TO_CACTUS, immune);
     }
 
     @Override

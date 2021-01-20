@@ -111,6 +111,7 @@ public class BlockJar extends ContainerBlock implements ICustomRendered {
             }
             world.getTileEntity(pos).markDirty();
         }
+
     }
 
     @Nullable

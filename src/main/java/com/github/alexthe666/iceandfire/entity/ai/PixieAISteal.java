@@ -2,6 +2,7 @@ package com.github.alexthe666.iceandfire.entity.ai;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityPixie;
@@ -23,7 +24,7 @@ public class PixieAISteal extends Goal {
     private double pitch;
     private double yaw;
     private PlayerEntity temptingPlayer;
-    private int delayTemptCounter;
+    private int delayTemptCounter = 0;
     private boolean isRunning;
 
     public PixieAISteal(EntityPixie temptedEntityIn, double speedIn) {
@@ -52,7 +53,7 @@ public class PixieAISteal extends Goal {
     }
 
     public boolean shouldContinueExecuting() {
-        return !temptedEntity.isTamed() && temptedEntity.getHeldItemMainhand().isEmpty();
+        return !temptedEntity.isTamed() && temptedEntity.getHeldItemMainhand().isEmpty() && this.delayTemptCounter == 0;
     }
 
     public void startExecuting() {
@@ -64,7 +65,7 @@ public class PixieAISteal extends Goal {
 
     public void resetTask() {
         this.temptingPlayer = null;
-        this.delayTemptCounter = 10;
+        this.delayTemptCounter += 10;
         this.isRunning = false;
     }
 
@@ -93,6 +94,10 @@ public class PixieAISteal extends Goal {
                 this.temptedEntity.playSound(IafSoundRegistry.PIXIE_TAUNT, 1F, 1F);
                 if (temptingPlayer != null) {
                     this.temptingPlayer.addPotionEffect(new EffectInstance(this.temptedEntity.negativePotions[this.temptedEntity.getColor()], 100));
+                } else {
+                    // NOTE: Includes fix from https://github.com/Alex-the-666/Ice_and_Fire/pull/3412/commits/ef9510c9291e051c965553dddf3e55b305c11305
+                    this.temptedEntity.flipAI(true);
+                    this.delayTemptCounter = 10 *20;
                 }
             }
 

@@ -19,6 +19,7 @@ public class ItemWithResistance extends ItemGeneric {
     protected boolean isImmuneToExplosions = false;
     protected boolean isImmuneToFire = false;
     protected boolean isImmuneToLightning = false;
+    protected boolean isImmuneToCactus = false;
 
     public ItemWithResistance(String name) {
         super(name, new Item.Properties().group(IceAndFire.TAB_ITEMS));
@@ -36,6 +37,11 @@ public class ItemWithResistance extends ItemGeneric {
 
     public ItemWithResistance makeImmuneToExplosions() {
         this.isImmuneToExplosions = true;
+        return this;
+    }
+
+    public ItemWithResistance makeImmuneToCactus() {
+        this.isImmuneToCactus = true;
         return this;
     }
 
@@ -63,6 +69,14 @@ public class ItemWithResistance extends ItemGeneric {
         this.isImmuneToLightning = value;
     }
 
+    public boolean isImmuneToCactus() {
+        return this.isImmuneToCactus;
+    }
+
+    public void setIsImmuneToCactus(boolean value) {
+        this.isImmuneToCactus = value;
+    }
+
     public boolean hasCustomEntity(ItemStack stack) {
         if(stack != null && !stack.isEmpty() && (stack.getItem() instanceof ItemWithResistance)) {
             System.out.println("IItemWithResistance.hasCustomEntity() returning true");
@@ -80,6 +94,7 @@ public class ItemWithResistance extends ItemGeneric {
             newEntity.setIsImmuneToExplosions(this.isImmuneToExplosions);
             newEntity.setIsImmuneToFire(this.isImmuneToFire);
             newEntity.setIsImmuneToLightning(this.isImmuneToLightning);
+            newEntity.setIsImmuneToCactus(this.isImmuneToCactus);
 
             System.out.println("ItemWithResistance.createEntity() returning new ItemEntityWithResistance");
 
