@@ -170,7 +170,9 @@ public class IafEntityRegistry {
             throw new RuntimeException(e);
         }
 
-        bakeAttributes();
+        // NOTE: Is run in IceAndFire.java via Event scheduling
+        //bakeAttributes();
+
     }
 
     public static HashMap<String, Boolean> LOADED_ENTITIES;

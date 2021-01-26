@@ -65,7 +65,10 @@ public class PixieAISteal extends Goal {
 
     public void resetTask() {
         this.temptingPlayer = null;
-        this.delayTemptCounter += 10;
+
+        if (this.delayTemptCounter < 10)
+            this.delayTemptCounter += 10;
+
         this.isRunning = false;
     }
 
@@ -95,12 +98,16 @@ public class PixieAISteal extends Goal {
                 if (temptingPlayer != null) {
                     this.temptingPlayer.addPotionEffect(new EffectInstance(this.temptedEntity.negativePotions[this.temptedEntity.getColor()], 100));
                 } else {
-                    // NOTE: Includes fix from https://github.com/Alex-the-666/Ice_and_Fire/pull/3412/commits/ef9510c9291e051c965553dddf3e55b305c11305
+
                     this.temptedEntity.flipAI(true);
                     this.delayTemptCounter = 10 *20;
                 }
             }
-
+            //If the pixie couldn't steal anything
+            else{
+                this.temptedEntity.flipAI(true);
+                this.delayTemptCounter = 10 * 20;
+            }
         } else {
             this.temptedEntity.getMoveHelper().setMoveTo(this.temptingPlayer.getPosX(), this.temptingPlayer.getPosY() + 1.5F, this.temptingPlayer.getPosZ(), 1D);
         }
