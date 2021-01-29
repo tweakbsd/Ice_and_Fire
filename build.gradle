@@ -32,7 +32,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.1.5-1.16.3-tweakbsd'
+version = '2.1.6-1.16.3-tweakbsd'
 group = 'com.github.alexthe666' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'iceandfire'
 

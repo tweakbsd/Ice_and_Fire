@@ -502,15 +502,6 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
             this.navigatorType = 2;
         }
     }
-    @Override
-    public boolean canBeRiddenInWater(Entity rider)
-    {
-        return true;
-    }
-    protected void updateAITasks() {
-        super.updateAITasks();
-        breakBlock();
-    }
 
     public boolean canDestroyBlock(BlockPos pos) {
         return world.getBlockState(pos).getBlock().canEntityDestroy(world.getBlockState(pos), world, pos, this);
@@ -2208,17 +2199,7 @@ public abstract class EntityDragonBase extends TameableEntity implements IPassab
         super.setAttackTarget(LivingEntityIn);
         this.flightManager.onSetAttackTarget(LivingEntityIn);
     }
-    @Override
-    public boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
-        if (this.isTamed() && target instanceof TameableEntity) {
-            TameableEntity tamableTarget = (TameableEntity) target;
-            UUID targetOwner = tamableTarget.getOwnerId();
-            if (targetOwner != null && targetOwner.equals(this.getOwnerId())) {
-                return false;
-            }
-        }
-        return super.shouldAttackEntity(target, owner);
-    }
+
     public boolean canAttack(LivingEntity target) {
         return super.canAttack(target) && DragonUtils.isAlive(target);
     }
