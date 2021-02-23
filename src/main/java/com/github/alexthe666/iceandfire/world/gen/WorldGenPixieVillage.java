@@ -25,7 +25,6 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 public class WorldGenPixieVillage extends Feature<NoFeatureConfig> {
 
-    protected static final ConfiguredFeature SWAMP_FEATURE = Features.field_243863_bI;
     private static final Direction[] HORIZONTALS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
     public WorldGenPixieVillage(Codec<NoFeatureConfig> configFactoryIn) {
@@ -33,7 +32,7 @@ public class WorldGenPixieVillage extends Feature<NoFeatureConfig> {
     }
 
     @Override
-    public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator p_230362_3_, Random rand, BlockPos position, NoFeatureConfig p_230362_6_) {
+    public boolean generate(ISeedReader worldIn, ChunkGenerator p_230362_3_, Random rand, BlockPos position, NoFeatureConfig p_230362_6_) {
         if(!IafWorldRegistry.isDimensionListed(worldIn)){
             return false;
         }

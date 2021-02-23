@@ -76,14 +76,14 @@ public class ItemSummoningCrystal extends Item {
                     if (!draginTag.getString("CustomName").isEmpty()) {
                         dragonName = draginTag.getString("CustomName");
                     }
-                    tooltip.add(new TranslationTextComponent("item.iceandfire.summoning_crystal.bound", dragonName).func_240699_a_(TextFormatting.GRAY));
+                    tooltip.add(new TranslationTextComponent("item.iceandfire.summoning_crystal.bound", dragonName).mergeStyle(TextFormatting.GRAY));
                     flag = true;
                 }
             }
         }
         if (!flag) {
-            tooltip.add(new TranslationTextComponent("item.iceandfire.summoning_crystal.desc_0").func_240699_a_(TextFormatting.GRAY));
-            tooltip.add(new TranslationTextComponent("item.iceandfire.summoning_crystal.desc_1").func_240699_a_(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("item.iceandfire.summoning_crystal.desc_0").mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("item.iceandfire.summoning_crystal.desc_1").mergeStyle(TextFormatting.GRAY));
 
         }
 
@@ -96,6 +96,7 @@ public class ItemSummoningCrystal extends Item {
         float yaw = context.getPlayer().rotationYaw;
         boolean displayError = false;
         if (stack.getItem() == this && hasDragon(stack)) {
+
             CompoundNBT tag = stack.getTag();
             if (tag != null && tag.contains("Dragon")) {
                 CompoundNBT dragonTag = tag.getCompound("Dragon");
@@ -103,7 +104,7 @@ public class ItemSummoningCrystal extends Item {
                 if (dragonUUID != null) {
                     if (!context.getWorld().isRemote) {
                         try {
-                            Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.func_234923_W_()).getEntityByUuid(dragonUUID);
+                            Entity entity = context.getWorld().getServer().getWorld(context.getPlayer().world.getDimensionKey()).getEntityByUuid(dragonUUID);
                             if (entity != null) {
                                 foundDragon = true;
                                 summonEntity(entity, context.getWorld(), offsetPos, yaw);

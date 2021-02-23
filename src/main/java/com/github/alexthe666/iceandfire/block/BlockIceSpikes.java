@@ -45,7 +45,7 @@ public class BlockIceSpikes extends Block {
     			.hardnessAndResistance(2.5F)
     			.harvestLevel(1)
     			.harvestTool(ToolType.PICKAXE)
-    			.func_235861_h_()
+    			.setRequiresTool()
 		);
 
         this.setRegistryName(IceAndFire.MODID, "dragon_ice_spikes");
@@ -77,6 +77,7 @@ public class BlockIceSpikes extends Block {
     }
 
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
+
 
         boolean hasIceDragonProtection = false;
         if(entityIn instanceof EntityIceDragon) {

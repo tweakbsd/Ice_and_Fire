@@ -56,6 +56,7 @@ public class BiomeConfig {
     public static List<? extends String> whiteHippogryphBiomes = Lists.newArrayList("minecraft:snowy_mountains", "minecraft:snowy_taiga_mountains", "minecraft:snowy_taiga_hills");
     public static Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> biomeConfigValues = new HashMap<>();
     public BiomeConfig(final ForgeConfigSpec.Builder builder) {
+        //TODO reimplement biome dictionary
         builder.comment(
                 "Biome config",
                 "To filter biomes by registry name \"mod_id:biome_id\"",
@@ -118,9 +119,8 @@ public class BiomeConfig {
     }
 
     public static void bake(ModConfig config) {
-        /*try {
+        try {
             for (Field f : BiomeConfig.class.getDeclaredFields()) {
-            IceAndFire.LOGGER.warn("")
                 Object obj = f.get(null);
                 if(obj instanceof List){
                     ForgeConfigSpec.ConfigValue<List<? extends String>> configValue = ConfigHolder.BIOME.biomeConfigValues.get(f.getName());
@@ -133,6 +133,5 @@ public class BiomeConfig {
             IceAndFire.LOGGER.warn("Encountered error building iceandfire-biomes.toml");
             e.printStackTrace();
         }
-         */
     }
 }
