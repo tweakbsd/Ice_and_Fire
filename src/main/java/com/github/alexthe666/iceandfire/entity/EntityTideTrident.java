@@ -246,6 +246,7 @@ public class EntityTideTrident extends TridentEntity {
                 System.out.println("PIERCED checking for thunder and channeling...");
                 if (this.world instanceof ServerWorld && this.world.isThundering() && EnchantmentHelper.hasChanneling(this.thrownStack)) {
                     BlockPos blockpos = entity.func_233580_cy_();
+
                     if (this.world.canSeeSky(blockpos)) {
                         LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.world);
                         lightningboltentity.func_233576_c_(Vector3d.func_237492_c_(blockpos));
