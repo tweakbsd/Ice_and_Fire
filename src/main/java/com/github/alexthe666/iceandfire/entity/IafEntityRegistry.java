@@ -13,7 +13,6 @@ import com.github.alexthe666.iceandfire.entity.props.FrozenEntityProperties;
 import com.github.alexthe666.iceandfire.entity.props.MiscEntityProperties;
 import com.github.alexthe666.iceandfire.entity.props.SirenEntityProperties;
 
-import com.github.alexthe666.iceandfire.util.IAFBiomeUtil;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
@@ -91,7 +90,7 @@ public class IafEntityRegistry {
     public static final EntityType<EntityGhost> GHOST = registerEntity(EntityType.Builder.create(EntityGhost::new, EntityClassification.CREATURE).size(0.8F, 1.9F).immuneToFire(), "ghost");
     public static final EntityType<EntityGhostSword> GHOST_SWORD = registerEntity(EntityType.Builder.create(EntityGhostSword::new, EntityClassification.MISC).size(0.5F, 0.5F).setCustomClientFactory(EntityGhostSword::new), "ghost_sword");
     // NOTE: tweakbsd own ItemEntity type that supports many resistances
-    public static final EntityType<ItemEntityWithResistance> ITEM_ENTITY_WITH_RESISTANCE = registerEntity(EntityType.Builder.create(ItemEntityWithResistance::new, EntityClassification.MISC).size(0.25F, 0.25F).func_233606_a_(6).func_233608_b_(20).setCustomClientFactory(ItemEntityWithResistance::new), "item_with_resistance");
+    public static final EntityType<ItemEntityWithResistance> ITEM_ENTITY_WITH_RESISTANCE = registerEntity(EntityType.Builder.create(ItemEntityWithResistance::new, EntityClassification.MISC).size(0.25F, 0.25F).trackingRange(6).func_233608_b_(20).setCustomClientFactory(ItemEntityWithResistance::new), "item_with_resistance");
 
     private static final EntityType registerEntity(EntityType.Builder builder, String entityName) {
         ResourceLocation nameLoc = new ResourceLocation(IceAndFire.MODID, entityName);
@@ -125,7 +124,7 @@ public class IafEntityRegistry {
         GlobalEntityTypeAttributes.put(TROLL, EntityTroll.bakeAttributes().create());
         GlobalEntityTypeAttributes.put(MYRMEX_WORKER, EntityMyrmexWorker.bakeAttributes().create());
         GlobalEntityTypeAttributes.put(MYRMEX_SOLDIER, EntityMyrmexSoldier.bakeAttributes().create());
-        GlobalEntityTypeAttributes.put(MYRMEX_SENTINEL, EntityMyrmePixieAIPickupItem.jaxSentinel.bakeAttributes().create());
+        GlobalEntityTypeAttributes.put(MYRMEX_SENTINEL, EntityMyrmexSentinel.bakeAttributes().create());
         GlobalEntityTypeAttributes.put(MYRMEX_ROYAL, EntityMyrmexRoyal.bakeAttributes().create());
         GlobalEntityTypeAttributes.put(MYRMEX_QUEEN, EntityMyrmexQueen.bakeAttributes().create());
         GlobalEntityTypeAttributes.put(MYRMEX_EGG, EntityMyrmexEgg.bakeAttributes().create());
@@ -190,31 +189,31 @@ public class IafEntityRegistry {
     public static void onBiomesLoad(BiomeLoadingEvent event) {
         Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
 
-        if (IafConfig.spawnHippogryphs && IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.hippogryphBiomes, biome)) {
+        if (IafConfig.spawnHippogryphs && BiomeConfig.test(BiomeConfig.hippogryphBiomes, biome)) {
             event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(IafEntityRegistry.HIPPOGRYPH, IafConfig.hippogryphSpawnRate, 1, 1));
             LOADED_ENTITIES.put("HIPPOGRYPH", true);
         }
-        if (IafConfig.spawnLiches && IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.mausoleumBiomes, biome)) {
+        if (IafConfig.spawnLiches && BiomeConfig.test(BiomeConfig.mausoleumBiomes, biome)) {
             event.getSpawns().getSpawner(EntityClassification.MONSTER).add(new MobSpawnInfo.Spawners(IafEntityRegistry.DREAD_LICH, IafConfig.lichSpawnRate, 1, 1));
             LOADED_ENTITIES.put("DREAD_LICH", true);
         }
-        if (IafConfig.spawnCockatrices && IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.cockatriceBiomes, biome)) {
+        if (IafConfig.spawnCockatrices && BiomeConfig.test(BiomeConfig.cockatriceBiomes, biome)) {
             event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(IafEntityRegistry.COCKATRICE, IafConfig.cockatriceSpawnRate, 1, 2));
             LOADED_ENTITIES.put("COCKATRICE", true);
         }
-        if (IafConfig.spawnAmphitheres && IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.amphithereBiomes, biome)) {
+        if (IafConfig.spawnAmphitheres && BiomeConfig.test(BiomeConfig.amphithereBiomes, biome)) {
             event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(IafEntityRegistry.AMPHITHERE, IafConfig.amphithereSpawnRate, 1, 3));
             LOADED_ENTITIES.put("AMPHITHERE", true);
         }
         if (IafConfig.spawnTrolls && (
-                IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.forestTrollBiomes, biome) ||
-                        IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.snowyTrollBiomes, biome) ||
-                        IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.mountainTrollBiomes, biome)
+                BiomeConfig.test(BiomeConfig.forestTrollBiomes, biome) ||
+                        BiomeConfig.test(BiomeConfig.snowyTrollBiomes, biome) ||
+                        BiomeConfig.test(BiomeConfig.mountainTrollBiomes, biome)
         )) {
             event.getSpawns().getSpawner(EntityClassification.MONSTER).add(new MobSpawnInfo.Spawners(IafEntityRegistry.TROLL, IafConfig.trollSpawnRate, 1, 1));
-            if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.forestTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_F", true);
-            if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.snowyTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_S", true);
-            if (IAFBiomeUtil.parseListForBiomeCheck(BiomeConfig.mountainTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_M", true);
+            if (BiomeConfig.test(BiomeConfig.forestTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_F", true);
+            if (BiomeConfig.test(BiomeConfig.snowyTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_S", true);
+            if (BiomeConfig.test(BiomeConfig.mountainTrollBiomes, biome)) LOADED_ENTITIES.put("TROLL_M", true);
         }
     }
 

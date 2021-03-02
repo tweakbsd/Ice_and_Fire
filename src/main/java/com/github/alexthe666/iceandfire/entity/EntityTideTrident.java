@@ -141,153 +141,9 @@ public class EntityTideTrident extends TridentEntity {
     }
 
 
-    protected void onEntityHit_TryToFixPiercing(EntityRayTraceResult p_213868_1_) {
-        //super.onEntityHit(p_213868_1_);
-        // NOTE: Cannot call super, or we get normal Trident behaviour and no piercing
-
-        Entity entity = p_213868_1_.getEntity();
-        float f =  ATTACK_DAMAGE;  //(float)this.getMotion().length();
-        int i = MathHelper.ceil(MathHelper.clamp((double)f, 0.0D, 2.147483647E9D));
-        if (this.getPierceLevel() > 0) {
-            if (this.piercedEntities == null) {
-                this.piercedEntities = new IntOpenHashSet(5);
-            }
-
-            if (this.hitEntities == null) {
-                this.hitEntities = Lists.newArrayListWithCapacity(5);
-            }
-
-            if (this.piercedEntities.size() >= this.getPierceLevel() + 1) {
-
-                System.out.println("PIERCED more than 2 entities. Setting this.dealtDamage to TRUE and doing nothing...");
-
-                // NOTE: tweakbsd added code, last pierced entity, need to reset hitEntities / piercedEntities
-                this.hitEntities = null;
-                this.piercedEntities = null;
-
-                this.dealtDamage = true;
-                return;
-            }
-
-            System.out.println("PIERCED adding Entity ID to list ...");
-            this.piercedEntities.add(entity.getEntityId());
-        }
-
-        if (this.getIsCritical()) {
-            long j = (long)this.rand.nextInt(i / 2 + 2);
-            i = (int)Math.min(j + (long)i, 2147483647L);
-        }
-
-        SoundEvent soundevent = SoundEvents.ITEM_TRIDENT_HIT;
-
-        Entity entity1 = this.func_234616_v_();
-        DamageSource damagesource;
-        if (entity1 == null) {
-            damagesource = DamageSource.causeTridentDamage(this, this);
-        } else {
-            damagesource = DamageSource.causeTridentDamage(this, entity1);
-            if (entity1 instanceof LivingEntity) {
-                ((LivingEntity)entity1).setLastAttackedEntity(entity);
-            }
-        }
-
-        boolean flag = entity.getType() == EntityType.ENDERMAN;
-        int k = entity.getFireTimer();
-        if (this.isBurning() && !flag) {
-            entity.setFire(5);
-        }
-
-        if (entity.attackEntityFrom(damagesource, (float)i)) {
-            if (flag) {
-                return;
-            }
-            
-            if (entity instanceof LivingEntity) {
-                LivingEntity livingentity = (LivingEntity)entity;
-
-                /*
-                if (!this.world.isRemote && this.getPierceLevel() <= 0) {
-
-                    // NOTE: No piercing, we are done
-                    //livingentity.setArrowCountInEntity(livingentity.getArrowCountInEntity() + 1);
-                }
-                */
-
-                if (this.knockbackStrength > 0) {
-                    Vector3d vector3d = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize().scale((double)this.knockbackStrength * 0.6D);
-                    if (vector3d.lengthSquared() > 0.0D) {
-                        livingentity.addVelocity(vector3d.x, 0.1D, vector3d.z);
-                    }
-                }
-
-                if (!this.world.isRemote && entity1 instanceof LivingEntity) {
-                    EnchantmentHelper.applyThornEnchantments(livingentity, entity1);
-                    EnchantmentHelper.applyArthropodEnchantments((LivingEntity)entity1, livingentity);
-                }
-
-                System.out.println("PIERCED attackEntity() was TRUE, calling arrowHit() ...");
-                this.arrowHit(livingentity);
-
-                if (entity1 != null && livingentity != entity1 && livingentity instanceof PlayerEntity && entity1 instanceof ServerPlayerEntity && !this.isSilent()) {
-                    ((ServerPlayerEntity)entity1).connection.sendPacket(new SChangeGameStatePacket(SChangeGameStatePacket.field_241770_g_, 0.0F));
-                }
-
-                if (!entity.isAlive() && this.hitEntities != null) {
-
-                    System.out.println("PIERCED adding livingentity to hitEntities list... size before " + this.hitEntities.size());
-
-                    this.hitEntities.add(livingentity);
-                }
-
-
-                this.setMotion(this.getMotion().mul(-0.01D, -0.1D, -0.01D));
-                float f1 = 1.0F;
-
-                System.out.println("PIERCED checking for thunder and channeling...");
-                if (this.world instanceof ServerWorld && this.world.isThundering() && EnchantmentHelper.hasChanneling(this.thrownStack)) {
-                    BlockPos blockpos = entity.func_233580_cy_();
-
-                    if (this.world.canSeeSky(blockpos)) {
-                        LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.world);
-                        lightningboltentity.func_233576_c_(Vector3d.func_237492_c_(blockpos));
-                        lightningboltentity.setCaster(entity1 instanceof ServerPlayerEntity ? (ServerPlayerEntity)entity1 : null);
-                        this.world.addEntity(lightningboltentity);
-                        soundevent = SoundEvents.ITEM_TRIDENT_THUNDER;
-                        //f1 = 5.0F;
-                    }
-                }
-
-            }
-
-            this.playSound(soundevent, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-
-        } else {
-
-            System.out.println("PIERCED attackEntity() was FALSE.");
-
-            // NOTE: this.fire = k
-            entity.func_241209_g_(k);
-            this.setMotion(this.getMotion().scale(-0.1D));
-            this.rotationYaw += 180.0F;
-            this.prevRotationYaw += 180.0F;
-
-            /*
-            if (!this.world.isRemote && this.getMotion().lengthSquared() < 1.0E-7D) {
-                if (this.pickupStatus == AbstractArrowEntity.PickupStatus.ALLOWED) {
-                    this.entityDropItem(this.getArrowStack(), 0.1F);
-                }
-                this.remove();
-            }
-             */
-        }
-
-
-        //this.playSound(soundevent, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-
-
-    }
 
     //@Override
+    /*
     protected void old_onEntityHit(EntityRayTraceResult p_213868_1_) {
         Entity entity = p_213868_1_.getEntity();
         float f = ATTACK_DAMAGE;  // NOTE: tweakbsd added damage to be in sync with corresponding item
@@ -301,7 +157,7 @@ public class EntityTideTrident extends TridentEntity {
         DamageSource damagesource = DamageSource.causeTridentDamage(this, (Entity)(entity1 == null ? this : entity1));
         this.dealtDamage = true;  // NOTE: tweakbsd added to accesstransformers.cfg cause was missing and trident had weird behaviour after succeessful hit.
 
-        /*
+
         NOTE: Same as above line without accesstransformer.cfg changes
         try {
             Field dealtDamageField = ObfuscationReflectionHelper.findField(EntityTideTrident.class, "field_226571_aq_");
@@ -311,7 +167,7 @@ public class EntityTideTrident extends TridentEntity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        */
+
 
         SoundEvent soundevent = SoundEvents.ITEM_TRIDENT_HIT;
         if (entity.attackEntityFrom(damagesource, f)) {
@@ -346,5 +202,7 @@ public class EntityTideTrident extends TridentEntity {
 
         this.playSound(soundevent, f1, 1.0F);
     }
+
+    */
 
 }

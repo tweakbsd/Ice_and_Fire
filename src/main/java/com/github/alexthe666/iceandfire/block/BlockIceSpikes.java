@@ -113,7 +113,7 @@ public class BlockIceSpikes extends Block {
 
             if(entityIn.attackEntityFrom(DamageSource.CACTUS, 1)) {
                 if (entityIn instanceof LivingEntity && entityIn.getMotion().x != 0 && entityIn.getMotion().z != 0) {
-                    ((LivingEntity) entityIn).func_233627_a_(0.5F, entityIn.getMotion().x, entityIn.getMotion().z);
+                    ((LivingEntity) entityIn).applyKnockback(0.5F, entityIn.getMotion().x, entityIn.getMotion().z);
                 }
             }
         }

@@ -279,17 +279,17 @@ public class IafItemRegistry {
     public static final Item TIDE_TRIDENT = new ItemTideTrident();
     public static final Item CHAIN = new ItemChain(false);
     public static final Item CHAIN_STICKY = new ItemChain(true);
-    // NOTE: tweakbsd Dragonsteel of type fire added Properties for func_234689_a_() aka. isImmuneToFire()
-    public static final Item DRAGONSTEEL_FIRE_INGOT = new ItemGeneric("dragonsteel_fire_ingot", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_SWORD = new ItemModSword(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_sword", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_PICKAXE = new ItemModPickaxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_pickaxe", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_AXE = new ItemModAxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_axe", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_SHOVEL = new ItemModShovel(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_shovel", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_HOE = new ItemModHoe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_hoe", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_HELMET = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 0, EquipmentSlotType.HEAD, "dragonsteel_fire_helmet", "iceandfire.dragonsteel_fire_helmet", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_CHESTPLATE = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 1, EquipmentSlotType.CHEST, "dragonsteel_fire_chestplate", "iceandfire.dragonsteel_fire_chestplate", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_LEGGINGS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 2, EquipmentSlotType.LEGS, "dragonsteel_fire_leggings", "iceandfire.dragonsteel_fire_leggings", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
-    public static final Item DRAGONSTEEL_FIRE_BOOTS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 3, EquipmentSlotType.FEET, "dragonsteel_fire_boots", "iceandfire.dragonsteel_fire_boots", new Item.Properties().func_234689_a_().rarity(Rarity.EPIC));
+
+    public static final Item DRAGONSTEEL_FIRE_INGOT = new ItemGeneric("dragonsteel_fire_ingot", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_SWORD = new ItemModSword(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_sword", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_PICKAXE = new ItemModPickaxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_pickaxe", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_AXE = new ItemModAxe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_axe", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_SHOVEL = new ItemModShovel(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_shovel", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_HOE = new ItemModHoe(DRAGONSTEEL_FIRE_TOOL_MATERIAL, "dragonsteel_fire_hoe", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_HELMET = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 0, EquipmentSlotType.HEAD, "dragonsteel_fire_helmet", "iceandfire.dragonsteel_fire_helmet", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_CHESTPLATE = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 1, EquipmentSlotType.CHEST, "dragonsteel_fire_chestplate", "iceandfire.dragonsteel_fire_chestplate", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_LEGGINGS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 2, EquipmentSlotType.LEGS, "dragonsteel_fire_leggings", "iceandfire.dragonsteel_fire_leggings", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
+    public static final Item DRAGONSTEEL_FIRE_BOOTS = new ItemDragonsteelArmor(DRAGONSTEEL_FIRE_ARMOR_MATERIAL, 3, EquipmentSlotType.FEET, "dragonsteel_fire_boots", "iceandfire.dragonsteel_fire_boots", new Item.Properties().isImmuneToFire().rarity(Rarity.EPIC));
 
     // NOTE: not fire immune dragonsteel
     public static final Item DRAGONSTEEL_ICE_INGOT = new ItemWithResistance("dragonsteel_ice_ingot").makeImmuneToCactus().makeImmuneToFire();

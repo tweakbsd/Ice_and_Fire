@@ -93,10 +93,7 @@ public class ItemDragonsteelArmor extends ArmorItem implements IProtectAgainstDr
             // NOTE: round to lower number of -> reduction / 175 <- then make it a double
             // Results in 0.3 - 0.7 per slot
             double knockbackResistance = Math.floor( ((double)reduction / 175.0) * 100) / 100.0D;
-            String name = "Dragonsteel Knockback modifier " + this.slot;
-            // NOTE: tweakbsd field_233820_c_ aka KNOCKBACK_RESISTANCE
-            ret.put(Attributes.field_233820_c_,
-                    new AttributeModifier(uuid, name, knockbackResistance, AttributeModifier.Operation.ADDITION));
+            ret.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Dragonsteel Knockback modifier", knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
         return ret;
     }
